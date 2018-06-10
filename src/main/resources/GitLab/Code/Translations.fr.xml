@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.3" reference="GitLab.Code.Translations" locale="fr">
+  <web>GitLab.Code</web>
+  <name>Translations</name>
+  <language>fr</language>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>1</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <creationDate>1514761200000</creationDate>
+  <parent>GitHubCode.WebHome</parent>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <date>1514761200000</date>
+  <contentUpdateDate>1514761200000</contentUpdateDate>
+  <version>1.1</version>
+  <title>GitLabApp Translations</title>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>xwiki/2.0</syntaxId>
+  <hidden>false</hidden>
+  <content>gitlab.title=Application GitLab 
+gitlab.description=Bienvenue sur l'application gitlab. Vous pouvez configurer votre module GitLab pour connecter votre wiki et commiter votre code XWiki sur gitlab.
+gitlab.currentconfigs.title=Configurations GitLab disponibles
+gitlab.currentconfigs.noconfigs=Il n'y a pas de configuration GitLab
+gitlab.createnewconfig=Créer une nouvelle configuration GitLab
+gitlab.createnewimport.error.titlemissing=Un titre est necessaire pour une configuration GitLab
+gitlab.configsheet.title=Configuration GitLab
+gitlab.configsheet.compare.title=Differences pour
+gitlab.configsheet.debug=Debug
+gitlab.configsheet.commitmessage=Message du commit
+gitlab.configsheet.commitpom=Commiter un fichier POM Maven
+gitlab.configsheet.listpages=Liste des pages à committer
+gitlab.configsheet.commitall=Commiter
+gitlab.configsheet.updateall=Mettre à jour
+gitlab.configsheet.exportall=Exporter
+gitlab.configsheet.commit=Commiter
+gitlab.configsheet.viewdoc=Voir le document
+gitlab.configsheet.viewdiff=Voir les différences
+gitlab.configsheet.viewdiffunformatted=Voir les différences (sans formattage)
+gitlab.configsheet.committingpages=En cours de commit des pages suivantes
+gitlab.configsheet.committsuccessfull=Commit réalisé avec succès
+gitlab.configsheet.backtolist=Retour à la liste des pages
+gitlab.configsheet.backtocustom=Retour à la liste custom
+gitlab.configsheet.confirmcommittingpage=Veuillez confirmer le commit des pages suivantes
+gitlab.configsheet.custom.spacelist=Liste des espaces (separés par des virgules)
+gitlab.configsheet.custom.space=Espace
+gitlab.configsheet.customlist=Liste custom des pages
+gitlab.configsheet.pagesupdated=Les pages suivantes ont été mise-à-jour à partir de GitLab
+GitLab.Code.GitLabConfigClass_name=Project Name
+GitLab.Code.GitLabConfigClass_description=Project Description
+GitLab.Code.GitLabConfigClass_version=Project version
+GitLab.Code.GitLabConfigClass_repository_user=Espace GitLab
+GitLab.Code.GitLabConfigClass_repository_user_tooltip=Espace GitLab ou est le "repository"
+GitLab.Code.GitLabConfigClass_repository_name=Repository GitLab
+GitLab.Code.GitLabConfigClass_repository_name_tooltip=Nom du repository du project GitLab
+GitLab.Code.GitLabConfigClass_repository_path=Sous-repertoires GitLab
+GitLab.Code.GitLabConfigClass_repository_path_tooltip=chemin relatif du sous-repertoire (src/main/resources/)
+GitLab.Code.GitLabConfigClass_username=Utilisateur
+GitLab.Code.GitLabConfigClass_username_tooltip=Utilisateur de connection à GitLab
+GitLab.Code.GitLabConfigClass_password=Mot de passe
+GitLab.Code.GitLabConfigClass_password_tooltip=Mot de passe de connection à GitLab
+GitLab.Code.GitLabConfigClass_defaultspace=Liste des espaces par défaut
+GitLab.Code.GitLabConfigClass_defaultspace_tooltip=Liste des espaces à verifier
+GitLab.Code.GitLabConfigClass_savedlist=Liste Sauvegardée
+GitLab.Code.GitLabConfigClass_savedlist_tooltip=Liste de page sauvegardée listant les pages à commiter
+GitLab.Code.GitLabConfigClass_defaultdate=Date par défaut
+GitLab.Code.GitLabConfigClass_defaultdate_tooltip=Date à utiliser pour toutes les pages commités
+GitLab.Code.GitLabConfigClass_defaultuser=Utilisateur par défaut
+GitLab.Code.GitLabConfigClass_defaultuser_tooltip=Utilisateur à utiliser pour toutes les pages commités
+GitLab.Code.GitLabConfigClass_status=Etat du commit
+GitLab.Code.GitLabAuthClass_username=Utilisateur GitLab
+GitLab.Code.GitLabAuthClass_password=Mot de passe GitLab</content>
+</xwikidoc>
