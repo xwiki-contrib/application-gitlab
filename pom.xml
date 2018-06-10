@@ -29,7 +29,7 @@
   </parent>
   <groupId>org.xwiki.contrib.gitlab</groupId>
   <artifactId>application-gitlab</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>1.0</version>
   <packaging>xar</packaging>
   <name>gitlab Application</name>
   <description>XWiki GitLab Application allowing to commit XWiki code to a GitLab repository</description>
@@ -38,12 +38,12 @@
 
     <!-- Enable auto release on jira -->
     <xwiki.release.jira.skip>false</xwiki.release.jira.skip>
-    <xwiki.issueManagement.jira.id></xwiki.issueManagement.jira.id>
+    <xwiki.issueManagement.jira.id />
   </properties>
   <developers>
     <developer>
-      <id></id>
-      <name></name>
+      <id />
+      <name />
       <organization>XWiki SAS</organization>
     </developer>
   </developers>
@@ -68,7 +68,7 @@
     <connection>scm:git:git://git.xwikisas.com/ludovic/application-gitlab.git</connection>
     <developerConnection>scm:git:git@git.xwikisas.com:ludovic/application-gitlab.git</developerConnection>
     <url>https://git.xwikisas.com/ludovic/application-gitlab</url>
-    <tag>HEAD</tag>
+    <tag>application-gitlab-1.0</tag>
   </scm>
   <distributionManagement>
     <repository>
