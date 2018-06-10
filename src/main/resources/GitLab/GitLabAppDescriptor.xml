@@ -264,7 +264,7 @@
       <gitlab_url>https://git.xwikisas.com/</gitlab_url>
     </property>
     <property>
-      <name>GitLab Application</name>
+      <name>GitLab</name>
     </property>
     <property>
       <password>cr3g_v5Yam6qsbey6WoL</password>
@@ -283,7 +283,7 @@
     </property>
     <property>
       <status>GitLab.Code/SamplePOM;3.3;-1526990051;0
-GitLab.Code/WebHome;3.1;1086497132;0
+GitLab.Code/WebHome;5.1;1086497132;0
 GitLab.Code/WebHomeSheet;3.1;-593697296;0
 GitLab.Code/GitLabConfigTemplate;9.1;-406285989;0
 GitLab.Code/GitLabConfigClass;5.29;-194487630;0
@@ -293,7 +293,7 @@ GitLab.Code/Translations;4.3;1172122766;0
 GitLab.Code/GitLabAuthClass;1.6;1180696900;0
 GitLab.Code/SavedListSuggest;1.2;;
 GitLab.Code/LicenceFile;2.2;-1093592173;0
-GitLab/GitLabAppDescriptor;127.1;2073724637;
+GitLab/GitLabAppDescriptor;137.1;779468586;
 GitLab.Code/GitLabGroovy;4.9;1881191348;0
 GitLab/WebHome;3.1;731582271;0
 </status>
