@@ -42,8 +42,8 @@
   </properties>
   <developers>
     <developer>
-      <id />
-      <name />
+      <id>ludovic</id>
+      <name>Ludovic Dubost</name>
       <organization>XWiki SAS</organization>
     </developer>
   </developers>
