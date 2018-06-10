@@ -27,11 +27,11 @@
     <artifactId>parent-platform</artifactId>
     <version>8.4</version>
   </parent>
-  <groupId>org.xwiki.contrib.gitlab-application</groupId>
-  <artifactId>application-gitlab-application</artifactId>
+  <groupId>org.xwiki.contrib.gitlab</groupId>
+  <artifactId>application-gitlab</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>xar</packaging>
-  <name>gitlab-application Application</name>
+  <name>gitlab Application</name>
   <description>XWiki GitLab Application allowing to commit XWiki code to a GitLab repository</description>
   <properties>
     <platform.version>${commons.version}</platform.version>
