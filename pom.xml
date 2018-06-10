@@ -47,6 +47,13 @@
       <organization>XWiki SAS</organization>
     </developer>
   </developers>
+  <dependencies>
+    <dependency>
+      <groupId>org.gitlab</groupId>
+      <artifactId>java-gitlab-api</artifactId>
+      <version>4.0.0</version>
+    </dependency>
+  </dependencies>
   <build>
     <!-- Needed to add support for the XAR packaging -->
     <extensions>
