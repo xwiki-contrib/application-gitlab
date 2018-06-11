@@ -49,7 +49,7 @@
   #set($ok = $newdoc.setTitle($request.title))
   #set($ok = $newdoc.setContent('{{include document="GitLab.Code.GitLabConfigSheet" /}}'))  
   #set($ok = $newdoc.setParent("GitLab.WebHome"))
-  #set($ok = $newdoc.newObject("GitLab.Code.GitLanConfigClass"))
+  #set($ok = $newdoc.newObject("GitLab.Code.GitLabConfigClass"))
   #set($ok = $newdoc.save())
   $response.sendRedirect($newdoc.getURL())
  #end

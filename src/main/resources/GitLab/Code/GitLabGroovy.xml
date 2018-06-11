@@ -189,7 +189,7 @@ public class GitLabGroovy {
 
     public getFilePath(pagedoc, nested) {
        // get page
-        def filePath = repsrcpath + "/" + ((nested) ? pagedoc.getSpace().replaceAll("[.]","/") : pagedoc.getSpace()) + "/" + pagedoc.getName();
+        def filePath = getSourcePath() + ((nested) ? pagedoc.getSpace().replaceAll("[.]","/") : pagedoc.getSpace()) + "/" + pagedoc.getName();
         def language = pagedoc.getLanguage();
         if (language!=null&amp;&amp;language!="")
           filePath += "." + language;
@@ -541,6 +541,14 @@ public class GitLabGroovy {
            }
     }
 
+    public containsSpace(spaceName, spaceList) {
+      for (item in spaceList) {
+         if (spaceName.startsWith(item))
+            return true;
+      }
+      return false;
+    }
+
     public getChangedPages(String spaces, String savedlist) {
         def changedMap = new TreeMap();
         def gitlabEntries = getEntries(spaces);
@@ -587,9 +595,11 @@ public class GitLabGroovy {
         if (spaceList!=null) {
          for (filePath in gitlabEntries.keySet()) {
              def entry = gitlabEntries.get(filePath);
-             def i1 = filePath.indexOf("/");
+             def i0 = getSourcePath().size()
+             def i1 = filePath.lastIndexOf("/");
              def i2 = filePath.indexOf(".xml");
-             def spaceName = (i1==-1) ? filePath : filePath.substring(0, i1);
+             def spaceName = (i1==-1) ? filePath : filePath.substring(i0, i1);
+             spaceName = spaceName.replaceAll("/", ".")
              def page = (i2==-1) ? filePath : filePath.substring(i1+1, i2);
              def language = "";
              def pageName = page;
@@ -598,8 +608,17 @@ public class GitLabGroovy {
                language = page.substring(i3+1);
                pageName = page.substring(0, i3);
              }
-             if (spaceList.contains(spaceName)&amp;&amp;!samePages.contains(filePath)&amp;&amp;!changedMap.keySet().contains(spaceName + "." + page)) {
+             debug("SpaceName: ${spaceName} SpaceList: ${spaceList} SamePages: ${samePages} FilePath: ${filePath} Page: ${spaceName}.${page}")
+             if (containsSpace(spaceName, spaceList)&amp;&amp;!samePages.contains(filePath)&amp;&amp;!changedMap.keySet().contains(spaceName + "." + page)) {
                changedMap.put(spaceName + "." + pageName, [ "fullname" : "${spaceName}.${pageName}", "language" : language, "status" : "N", "xwikiversion" : "", "gitlabsha" : entry.gitlabsha ])
+               debug("Adding page ${spaceName}.${page}")
+             } else {
+               if (!containsSpace(spaceName, spaceList))
+                 debug("${spaceName} not in ${spaceList}")
+               if (samePages.contains(filePath)) 
+                 debug("${filePath} already in list")
+               if (changedMap.keySet().contains(spaceName + "." + page))
+                 debug("${spaceName}.${page} already in list")
              }
          }
         }
