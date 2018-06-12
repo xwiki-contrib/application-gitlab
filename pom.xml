@@ -32,10 +32,10 @@
   <version>1.0.3-SNAPSHOT</version>
   <packaging>xar</packaging>
   <name>GitLab Application</name>
-  <description>XWiki GitLab Application allowing to commit XWiki code to a GitLab repository</description>
+  <description>Allows committing XWiki pages to a GitLab repository</description>
   <properties>
     <platform.version>${commons.version}</platform.version>
-
+    <xwiki.extension.category>application</xwiki.extension.category>
     <!-- Enable auto release on jira -->
     <xwiki.release.jira.skip>false</xwiki.release.jira.skip>
     <xwiki.issueManagement.jira.id />
