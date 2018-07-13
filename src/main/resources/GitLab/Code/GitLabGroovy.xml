@@ -305,9 +305,9 @@ public class GitLabGroovy {
 
         // Update attachment dates
         for (xa in clonedDoc.getAttachmentList()) {
-            debug("Checking attachment " + xa.getFilename())
+            xa.setVersion("1.1");
             if (defaultDate &amp;&amp; defaultDate!="") {
-               xa.setDate(defaultDate)
+               xa.setDate(defaultDate);
             }
             if (withFormat) {
                xa.setAuthor(DEFAULTAUTHOR);
