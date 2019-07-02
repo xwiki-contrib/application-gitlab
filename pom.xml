@@ -38,12 +38,17 @@
     <xwiki.extension.category>application</xwiki.extension.category>
     <!-- Enable auto release on jira -->
     <xwiki.release.jira.skip>false</xwiki.release.jira.skip>
-    <xwiki.issueManagement.jira.id />
+    <xwiki.issueManagement.jira.id>XGITLAB</xwiki.issueManagement.jira.id>
   </properties>
   <developers>
     <developer>
       <id>ludovic</id>
       <name>Ludovic Dubost</name>
+      <organization>XWiki SAS</organization>
+    </developer>
+    <developer>
+      <id>dgervalle</id>
+      <name>Denis Gervalle</name>
       <organization>XWiki SAS</organization>
     </developer>
   </developers>
@@ -65,16 +70,9 @@
     </extensions>
   </build>
   <scm>
-    <connection>scm:git:git://git.xwikisas.com/ludovic/application-gitlab.git</connection>
-    <developerConnection>scm:git:git@git.xwikisas.com:ludovic/application-gitlab.git</developerConnection>
-    <url>https://git.xwikisas.com/ludovic/application-gitlab</url>
+    <connection>scm:git:git@github.com:xwiki-contrib/application-gitlab.git</connection>
+    <developerConnection>scm:git:git@github.com:xwiki-contrib/application-gitlab.git</developerConnection>
+    <url>https://github.com/xwiki-contrib/application-gitlab</url>
     <tag>HEAD</tag>
   </scm>
-  <distributionManagement>
-    <repository>
-      <id>xwiki-staging</id>
-      <name>XWiki Staging Repository</name>
-      <url>http://nexus.xwiki.org/nexus/service/local/staging/deploy/maven2/</url>
-    </repository>
-  </distributionManagement>
 </project>
