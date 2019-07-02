@@ -54,30 +54,30 @@
   $response.sendRedirect($newdoc.getURL())
  #end
 #else
-$msg.get("gitlab.description")
+  $msg.get("gitlab.description")
 
-== $msg.get("gitlab.currentconfigs.title") ==
+  == $msg.get("gitlab.currentconfigs.title") ==
 
-#set($list = $xwiki.searchDocuments(", BaseObject as obj where doc.fullName=obj.name and obj.className='GitLab.Code.GitLabConfigClass' and doc.fullName&lt;&gt;'GitLab.Code.GitLabConfigTemplate'"))
-#if($list.size()==0)
-$msg.get("gitlab.currentconfigs.noconfigs")
-#else
-#foreach($item in $list)
- #set($itemTitle = $xwiki.getDocument($item).getDisplayTitle())
-* [[$itemTitle&gt;&gt;$item]]
-#end
-#end
+  #set($list = $xwiki.searchDocuments(", BaseObject as obj where doc.fullName=obj.name and obj.className='GitLab.Code.GitLabConfigClass' and doc.fullName&lt;&gt;'GitLab.Code.GitLabConfigTemplate'"))
+  #if($list.size()==0)
+    $msg.get("gitlab.currentconfigs.noconfigs")
+  #else
+    #foreach($item in $list)
+      #set($itemTitle = $xwiki.getDocument($item).getDisplayTitle())
+      * [[$itemTitle&gt;&gt;$item]]
+    #end
+  #end
 #end
 
 == $msg.get("gitlab.createnewconfig") ==
 
 {{html}}
-&lt;form action=""&gt;
-$msg.get("gitlab.title"):
-&lt;input type="text" name="title" size="60" value="" /&gt;
+  &lt;form action=""&gt;
+    $msg.get("gitlab.title"):
+    &lt;input type="text" name="title" size="60" value="" /&gt;
 
-&lt;input type="submit" value="$msg.get("gitlab.createnewconfig")" /&gt;
-&lt;/form&gt;
+    &lt;input type="submit" value="$msg.get("gitlab.createnewconfig")" /&gt;
+  &lt;/form&gt;
 {{/html}}
 {{/velocity}}</content>
 </xwikidoc>

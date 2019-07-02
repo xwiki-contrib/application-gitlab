@@ -39,8 +39,7 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>false</hidden>
-  <content>
-import org.gitlab.api.*;
+  <content>import org.gitlab.api.*;
 import org.gitlab.api.http.*;
 import org.gitlab.api.models.*;
 
@@ -178,7 +177,7 @@ public class GitLabGroovy {
     public getDebug() {
        return this.sdebug;
     }
-   
+
     public getDefaultSpace() {
         return this.defaultspace;
     }
