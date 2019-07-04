@@ -41,9 +41,9 @@
   <hidden>false</hidden>
   <content>{{velocity}}
 #if ("$!request.action" == "compare")
-= $msg.get('gitlab.configsheet.compare.title'): $request.page =
+= $services.localization.render('gitlab.configsheet.compare.title'): $request.page =
 #else
-= $msg.get("gitlab.configsheet.title"): $doc.name =
+= $services.localization.render('gitlab.configsheet.title'): $doc.documentReference.name =
 #end
 
 #if(!$xwiki.hasProgrammingRights())
@@ -54,26 +54,26 @@
 #set($configLoaded = "")
 #if(!$request.action)
   #set($class = $doc.getObject('GitLab.Code.GitLabConfigClass').xWikiClass)
-  #set($authobj = $doc.getObject("GitLab.Code.GitLabAuthClass", "contextuser", $context.user))
+  #set($authobj = $doc.getObject("GitLab.Code.GitLabAuthClass", "contextuser", $xcontext.user))
   #if(!$authobj)
     #set($authobj = $doc.newObject("GitLab.Code.GitLabAuthClass"))
-    #if($context.action=="edit")
+    #if($xcontext.action=="edit")
       #set($ok = $doc.use($authobj))
-      #set($ok = $doc.set("contextuser", $context.user))
+      #set($ok = $doc.set("contextuser", $xcontext.user))
       #set($ok = $doc.use("GitLab.Code.GitLabConfigClass"))
       #set($ok = $doc.save())
     #end
   #end
   {{html clean="false" wiki="true"}}
     #foreach($prop in $class.properties)
-      #set($tooltip = $prop.propertyClass.getTooltip($context.context))
+      #set($tooltip = $prop.propertyClass.getTooltip($xcontext.context))
       ; &lt;label#if ($xcontext.action == 'edit') for="GitLab.Code.GitLabClass_0_${prop.name}"#end&gt;$escapetool.xml($doc.displayPrettyName($prop.name, false, false))&lt;/label&gt;
       : $doc.display($prop.name)
-      #if($prop.name=="gitlab_url" &amp;&amp; $context.action=="edit")
+      #if($prop.name=="gitlab_url" &amp;&amp; $xcontext.action=="edit")
         #set($ok = $doc.use($authobj))
         ; &lt;label#if ($xcontext.action == 'edit') for="GitLab.Code.GitAuthClass_${authobj.number}_${prop.name}"#end&gt;$escapetool.xml($doc.displayPrettyName("token", false, false))&lt;/label&gt;
         : $doc.display("token")
-        #set($ok = $doc.set("contextuser", $context.user))
+        #set($ok = $doc.set("contextuser", $xcontext.user))
         $doc.display("contextuser", "hidden")
         #set($ok = $doc.use("GitLab.Code.GitLabConfigClass"))
       #end
@@ -81,7 +81,7 @@
   {{/html}}
 #else
   #set($gitlabgroovy = $xwiki.parseGroovyFromPage("GitLab.Code.GitLabGroovy","GitLab.Code.GitLabGroovy"))
-  #set($ok = $gitlabgroovy.setXWiki($xwiki, $context))
+  #set($ok = $gitlabgroovy.setXWiki($xwiki, $xcontext, $services))
   #if(!$gitlabgroovy.hasProgrammingRights())
      #warning("This application cannot work without programming rights on [[GitLab.Code.GitLabGroovy]]. Resave this page as an admin and retry.")
   #end
@@ -103,22 +103,22 @@
     {{html wiki=true clean=false}}
       &lt;form action="" method="get"&gt;
         &lt;input type="hidden" name="action" value="list" /&gt;
-        $msg.get("gitlab.configsheet.custom.spacelist"): &lt;input type="text" name="spaces" value="" /&gt;&lt;input type="submit" value="$msg.get("gitlab.configsheet.listpages")" /&gt;
+        $services.localization.render('gitlab.configsheet.custom.spacelist'): &lt;input type="text" name="spaces" value="" /&gt;&lt;input type="submit" value="$services.localization.render('gitlab.configsheet.listpages')" /&gt;
       &lt;/form&gt;
       &lt;form action="" method="get"&gt;
         &lt;input type="hidden" name="action" value="list" /&gt;
-        $msg.get("gitlab.configsheet.custom.space"): &lt;select name="spaces"&gt;
+        $services.localization.render('gitlab.configsheet.custom.space'): &lt;select name="spaces"&gt;
         #foreach($space in $xwiki.spaces)
           &lt;option value="$space"&gt;$space&lt;/option&gt;
         #end
         &lt;/select&gt;
-        &lt;input type="submit" value="$msg.get("gitlab.configsheet.listpages")" /&gt;
+        &lt;input type="submit" value="$services.localization.render('gitlab.configsheet.listpages')" /&gt;
       &lt;/form&gt;
     {{/html}}
   ## LIST ACTION
   #elseif($request.action=="list")
     {{html wiki=true clean=false}}
-      &lt;form action="$doc.name"  method="post"&gt;
+      &lt;form action="$doc.documentReference.name"  method="post"&gt;
         &lt;input type="hidden" name="action" value="commit" /&gt;
         &lt;input type="hidden" name="spaces" value="$!{spaces}" /&gt;
         &lt;ul&gt;
@@ -129,15 +129,15 @@
           &lt;li&gt;$status.status &lt;input type="checkbox" name="page" value="${status.fullname}.$!{status.language}" /&gt; ${page}
           &lt;input type="hidden" name="${status.fullname}.$!{status.language}_sha" value="${status.gitlabsha}" /&gt;
           #if($status.status!="N")
-            [[$msg.get("gitlab.configsheet.viewdiff")&gt;&gt;${doc.fullName}?action=compare&amp;page=${status.fullname}&amp;gitlablanguage=${status.language}&amp;spaces=$!{spaces}&amp;filePath=${status.filePath}||target=_blank]]
+            [[$services.localization.render('gitlab.configsheet.viewdiff')&gt;&gt;${doc.fullName}?action=compare&amp;page=${status.fullname}&amp;gitlablanguage=${status.language}&amp;spaces=$!{spaces}&amp;filePath=${status.filePath}||target=_blank]]
             -
-            [[$msg.get("gitlab.configsheet.viewdiffunformatted")&gt;&gt;${doc.fullName}?action=compare&amp;page=${status.fullname}&amp;gitlablanguage=${status.language}&amp;spaces=$!{spaces}&amp;filePath=${status.filePath}&amp;unformatted=1||target=_blank]]
+            [[$services.localization.render('gitlab.configsheet.viewdiffunformatted')&gt;&gt;${doc.fullName}?action=compare&amp;page=${status.fullname}&amp;gitlablanguage=${status.language}&amp;spaces=$!{spaces}&amp;filePath=${status.filePath}&amp;unformatted=1||target=_blank]]
             -
-            [[$msg.get("gitlab.configsheet.viewdoc")&gt;&gt;${status.fullname}?language=${status.language}||target=_blank]]
+            [[$services.localization.render('gitlab.configsheet.viewdoc')&gt;&gt;${status.fullname}?language=${status.language}||target=_blank]]
           #end
         #end
         &lt;/ul&gt;
-        &lt;input type="submit" name="commit" value="$msg.get("gitlab.configsheet.commitall")" /&gt; &lt;input type="submit" name="update" value="$msg.get("gitlab.configsheet.updateall")" /&gt; &lt;input type="submit" name="export" value="$msg.get("gitlab.configsheet.exportall")" /&gt;
+        &lt;input type="submit" name="commit" value="$services.localization.render('gitlab.configsheet.commitall')" /&gt; &lt;input type="submit" name="update" value="$services.localization.render('gitlab.configsheet.updateall')" /&gt; &lt;input type="submit" name="export" value="$services.localization.render('gitlab.configsheet.exportall')" /&gt;
       &lt;/form&gt;
     {{/html}}
   #elseif($request.export)
@@ -145,8 +145,8 @@
     #foreach($page in $request.getParameterValues("page"))
       #set($ok = $pagelist.add($page))
     #end
-    $gitlabgroovy.exportPages($doc.name, $pagelist)
-    #set($ok = $context.setFinished(true))
+    $gitlabgroovy.exportPages($doc.documentReference.name, $pagelist)
+    #set($ok = $xcontext.setFinished(true))
   #elseif($request.update)
     #set($pagelist = $xwiki.arrayList)
     #foreach($page in $request.getParameterValues("page"))
@@ -154,17 +154,17 @@
     #end
     #set($list = $gitlabgroovy.updatePages($pagelist,$spaces))
 
-    $msg.get("gitlab.configsheet.pagesupdated")
+    $services.localization.render('gitlab.configsheet.pagesupdated')
 
     #foreach($page in $list.keySet())
       * $page
     #end
 
-    [[$msg.get("gitlab.configsheet.backtolist")&gt;&gt;${doc.fullName}?action=list]] - [[$msg.get("gitlab.configsheet.backtocustom")&gt;&gt;${doc.fullName}?action=custom]]
+    [[$services.localization.render('gitlab.configsheet.backtolist')&gt;&gt;${doc.fullName}?action=list]] - [[$services.localization.render('gitlab.configsheet.backtocustom')&gt;&gt;${doc.fullName}?action=custom]]
 
   ## COMMIT ACTION with confirm
   #elseif($request.action=="commit" &amp;&amp; $request.confirm=="1")
-    $msg.get("gitlab.configsheet.committingpages"):
+    $services.localization.render('gitlab.configsheet.committingpages'):
 
     #set($pagelist = $xwiki.arrayList)
     #foreach($page in $request.getParameterValues("page"))
@@ -174,18 +174,18 @@
 
     $gitlabgroovy.commitFiles($pagelist, $request.message, $!request.pom)
 
-    $msg.get("gitlab.configsheet.committsuccessfull")
+    $services.localization.render('gitlab.configsheet.committsuccessfull')
 
 
-    [[$msg.get("gitlab.configsheet.backtolist")&gt;&gt;${doc.fullName}?action=list]] - [[$msg.get("gitlab.configsheet.backtocustom")&gt;&gt;${doc.fullName}?action=custom]]
+    [[$services.localization.render('gitlab.configsheet.backtolist')&gt;&gt;${doc.fullName}?action=list]] - [[$services.localization.render('gitlab.configsheet.backtocustom')&gt;&gt;${doc.fullName}?action=custom]]
 
   ## COMMIT ACTION before confirm
   #elseif($request.action=="commit")
     ## confirm commit
-    $msg.get("gitlab.configsheet.confirmcommittingpage")
+    $services.localization.render('gitlab.configsheet.confirmcommittingpage')
 
     {{html wiki=true}}
-      &lt;form action="$doc.name" method="post"&gt;
+      &lt;form action="$doc.documentReference.name" method="post"&gt;
         &lt;input type="hidden" name="action" value="commit" /&gt;
         &lt;input type="hidden" name="confirm" value="1" /&gt;
         &lt;input type="hidden" name="spaces" value="$!{spaces}" /&gt;
@@ -195,12 +195,12 @@
           &lt;input type="hidden" name="page" value="$!{page}" /&gt;
         #end
 
-        $msg.get("gitlab.configsheet.commitmessage"):
+        $services.localization.render('gitlab.configsheet.commitmessage'):
         &lt;br /&gt;
         &lt;textarea name="message" rows="5" cols="80"&gt;
         &lt;/textarea&gt;
         &lt;br /&gt;
-        &lt;input type="checkbox" name="pom" value="1" /&gt; $msg.get("gitlab.configsheet.commitpom")
+        &lt;input type="checkbox" name="pom" value="1" /&gt; $services.localization.render('gitlab.configsheet.commitpom')
         &lt;br /&gt;
         &lt;input type="submit" value="Commit" /&gt;
       &lt;/form&gt;
@@ -235,16 +235,10 @@
   ## OTHER ACTION
   #else
 
-    [[$msg.get("gitlab.configsheet.listpages")&gt;&gt;${doc.fullName}?action=list]] - [[$msg.get("gitlab.configsheet.customlist")&gt;&gt;${doc.fullName}?action=custom]]
+    [[$services.localization.render('gitlab.configsheet.listpages')&gt;&gt;${doc.fullName}?action=list]] - [[$services.localization.render('gitlab.configsheet.customlist')&gt;&gt;${doc.fullName}?action=custom]]
   #end
 
 #end ## end set config failed
-
-#if($request.action)
-$msg.get("gitlab.configsheet.debug"):
-
-{{{ $gitlabgroovy.getDebug() }}}
-#end
 #end ## Programming right check
 {{/velocity}}</content>
 </xwikidoc>
