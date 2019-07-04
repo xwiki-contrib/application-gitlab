@@ -95,7 +95,6 @@ public class GitLabGroovy {
     def token = "";
     def defaultDate = "";
     def defaultUser = "";
-    def sdebug = "";
     def status = new HashMap();
     def DEFAULTAUTHOR = "xwiki:XWiki.Admin";
 
@@ -143,7 +142,7 @@ public class GitLabGroovy {
         gitlabapi = GitlabAPI.connect(gitlaburl, token)
 
         gitlabproject = gitlabapi.getProject(repuser, repname)
-        debug("Project: ${gitlabproject}")
+        logger.debug("Project: ${gitlabproject}")
         return (gitlabproject==null) ? null : "";
     }
 
@@ -171,10 +170,6 @@ public class GitLabGroovy {
             configdoc.set("status", sstatus);
             configdoc.save();
         }
-    }
-
-    public debug(message) {
-        logger.debug(message);
     }
 
     public getDefaultSpace() {
@@ -337,7 +332,7 @@ public class GitLabGroovy {
                 .with("branch", branchName)
                 .with("commit_message", commitMsg)
                 .with("actions", actions);
-        debug("JSON: " + JsonOutput.toJson(req.data));
+        logger.debug("JSON: " + JsonOutput.toJson(req.data));
         return req.to(tailUrl, GitlabCommit.class);
     }
 
@@ -424,7 +419,7 @@ public class GitLabGroovy {
             }
         } catch (Throwable e) {
             e.printStackTrace();
-            debug("error preparing commit on page ${pagename2}: " + e.getMessage());
+            logger.debug("error preparing commit on page ${pagename2}: " + e.getMessage());
             return null;
         } finally {
         }
@@ -441,12 +436,12 @@ public class GitLabGroovy {
             action.file_path = "pom.xml";
             action.content = getPOMFile();
             actions.add(action);
-            debug("Added pom.xml to commit");
+            logger.debug("Added pom.xml to commit");
         }
 
         // now real commit
         def newCommit = gitLabCommits("master", message, actions);
-        debug("Created commit: " + newCommit);
+        logger.debug("Created commit: " + newCommit);
 
         // we need to save the status
         saveStatus();
@@ -459,11 +454,11 @@ public class GitLabGroovy {
 
     public findPage(entries, pagedoc) {
         def filePath = getFilePath(pagedoc, false);
-        debug("Check ${filePath} in entries");
+        logger.debug("Check ${filePath} in entries");
         def entry = entries.get(filePath);
         if (entry==null) {
             filePath = getFilePath(pagedoc, true);
-            debug("Check ${filePath} in entries");
+            logger.debug("Check ${filePath} in entries");
             entry = entries.get(filePath);
         }
         return [ entry : entry, filePath : filePath ];
@@ -478,7 +473,7 @@ public class GitLabGroovy {
         def result = findPage(gitlabEntries, pagedoc);
         def entry = result.entry;
         def filePath = result.filePath;
-        debug("Check ${filePath} ${wikihash}");
+        logger.debug("Check ${filePath} ${wikihash}");
 
         if (entry==null || !wikihash.equals(entry.gitlabhash) || !wikihash.equals(entry.gitlabhash_unformatted)) {
             def pageStatus = getPageStatus(getStatusPath(pagedoc));
@@ -493,7 +488,7 @@ public class GitLabGroovy {
             pageStatus.status = "";
             pageStatus.gitlabsha = (entry==null) ? "" : entry.gitlabsha;
 
-            debug("Checking page ${page} version ${pagedoc.getVersion()} pageStatus ${pageStatus} ${wikihash}")
+            logger.debug("Checking page ${page} version ${pagedoc.getVersion()} pageStatus ${pageStatus} ${wikihash}")
             // if the documents match after formatting but the pure gitlab content is different then display it as 'F' (content is equivalent except formatting).
             if (entry!=null &amp;&amp; wikihash.equals(entry.gitlabhash)) {
                 pageStatus.status = "F";
@@ -575,7 +570,7 @@ public class GitLabGroovy {
             }
             def whereSpace = StringUtils.join(joinList, " or ");
             def sql = "select distinct doc.fullName from XWikiDocument as doc where ${whereSpace}";
-            debug("Searching for ${sql}");
+            logger.debug("Searching for ${sql}");
             list = xwiki.search(sql)
         } else {
             list = StringUtils.split(xwiki.getDocument(savedlist).getValue("list"), "|");
@@ -586,7 +581,7 @@ public class GitLabGroovy {
             checkPage(page, pagedoc, changedMap, samePages, gitlabEntries);
 
             if (pagedoc.isNew()) {
-                debug("GitLabApp: error reading page ${pagedoc.fullName} which should exist");
+                logger.debug("GitLabApp: error reading page ${pagedoc.fullName} which should exist");
             }
 
             def transList = null
@@ -619,17 +614,17 @@ public class GitLabGroovy {
                     language = page.substring(i3+1);
                     pageName = page.substring(0, i3);
                 }
-                debug("SpaceName: ${spaceName} SpaceList: ${spaceList} SamePages: ${samePages} FilePath: ${filePath} Page: ${spaceName}.${page}")
+                logger.debug("SpaceName: ${spaceName} SpaceList: ${spaceList} SamePages: ${samePages} FilePath: ${filePath} Page: ${spaceName}.${page}")
                 if (containsSpace(spaceName, spaceList)&amp;&amp;!samePages.contains(filePath)&amp;&amp;!changedMap.keySet().contains(spaceName + "." + page)) {
                     changedMap.put(spaceName + "." + pageName, [ "fullname" : "${spaceName}.${pageName}", "language" : language, "status" : "N", "xwikiversion" : "", "gitlabsha" : entry.gitlabsha ])
-                    debug("Adding page ${spaceName}.${page}")
+                    logger.debug("Adding page ${spaceName}.${page}")
                 } else {
                     if (!containsSpace(spaceName, spaceList))
-                        debug("${spaceName} not in ${spaceList}")
+                        logger.debug("${spaceName} not in ${spaceList}")
                     if (samePages.contains(filePath))
-                        debug("${filePath} already in list")
+                        logger.debug("${filePath} already in list")
                     if (changedMap.keySet().contains(spaceName + "." + page))
-                        debug("${spaceName}.${page} already in list")
+                        logger.debug("${spaceName}.${page} already in list")
                 }
             }
         }
@@ -646,7 +641,7 @@ public class GitLabGroovy {
             def page = pageobj.page;
             def sha = pageobj.sha;
 
-            debug("Ready to update: ${page} ${sha}");
+            logger.debug("Ready to update: ${page} ${sha}");
 
             // separate the language particle at the end of the page name from the page fullname. The pagename is of form &lt;docfullname&gt;.&lt;doclanguage&gt;
             def languageSeparator = page.lastIndexOf('.');
@@ -669,7 +664,7 @@ public class GitLabGroovy {
             def gitlabversion = (entry==null) ? "" : entry.gitlabversion;
             def gitlabcontent = (entry==null) ? "" : entry.gitlabcontent;
 
-            debug("Ready to update: ${filePath}");
+            logger.debug("Ready to update: ${filePath}");
 
             if (!wikicontent.equals(gitlabcontent) &amp;&amp; gitlabcontent!=null &amp;&amp; gitlabcontent!="") {
                 def pageStatus = getPageStatus(getStatusPath(pagedoc));
@@ -795,7 +790,7 @@ public class GitLabGroovy {
                 def pagexml = getXML(pagedoc, true);
 
                 def baos = new ByteArrayOutputStream();
-                // debug("reading file: ${space}/${fileName}")
+                // logger.debug("reading file: ${space}/${fileName}")
                 // repository.getFile(space + "/" + fileName, -1, fileProperties, baos);
                 def gitlabcontent = new String(baos.toByteArray())
 
@@ -870,11 +865,11 @@ public class GitLabGroovy {
                     def gitlabhash = (gitlabcontent==null) ? "" : gitlabcontent.hashCode();
                     def gitlabversion = 0;
                     entries.put(file.path, [ "gitlabversion" : gitlabversion, "gitlabsha" : file.id, "gitlabhash" : "${gitlabhash}", "gitlabhash_unformatted" : "${gitlabhash_unformatted}", "gitlabcontent" : gitlabcontent ]);
-                    debug("Adding: ${file.path}");
+                    logger.debug("Adding: ${file.path}");
                 }
             }
         }
-        // debug("Entries: ${entries}")
+        // logger.debug("Entries: ${entries}")
         return entries;
     }
 
@@ -883,9 +878,9 @@ public class GitLabGroovy {
         def gitlabxml = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8");
         if (withFormat)
             gitlabxml = cleanXML(gitlabxml, true);
-        debug("Gitlab hash " + gitlabxml.hashCode())
+        logger.debug("Gitlab hash " + gitlabxml.hashCode())
         def xml = getXML(pagedoc, true);
-        debug("XWiki hash " + xml.hashCode())
+        logger.debug("XWiki hash " + xml.hashCode())
 
         if (pagedoc.isNew() &amp;&amp; gitlabxml == null)
             return "Document does not exist";
