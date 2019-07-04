@@ -332,7 +332,7 @@ public class GitLabGroovy {
                 .with("branch", branchName)
                 .with("commit_message", commitMsg)
                 .with("actions", actions);
-        logger.debug("JSON: " + JsonOutput.toJson(req.data));
+        logger.trace("JSON: " + JsonOutput.toJson(req.data));
         return req.to(tailUrl, GitlabCommit.class);
     }
 
