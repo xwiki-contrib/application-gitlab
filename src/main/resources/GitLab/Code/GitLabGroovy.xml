@@ -97,85 +97,85 @@ public class GitLabGroovy {
     def DEFAULTAUTHOR = "xwiki:XWiki.Admin";
 
     public setXWiki(xwiki, context) {
-      this.xwiki = xwiki;
-      this.context = context;
+        this.xwiki = xwiki;
+        this.context = context;
     }
 
     public hasProgrammingRights() {
-      return xwiki.hasProgrammingRights();
+        return xwiki.hasProgrammingRights();
     }
 
     public setGitLabConfig(page) {
-       this.configdoc = xwiki.getDocument(page)
-       this.prjname = configdoc.getValue("name");
-       this.prjdesc = configdoc.getValue("description");
-       this.prjversion = configdoc.getValue("version");
-       this.contribVersion = configdoc.getValue("contribVersion");
-       this.xmlVersion = configdoc.getValue("xarXmlVersion");
-       this.gitlaburl = configdoc.getValue("gitlab_url");
-       this.repuser = configdoc.getValue("repository_user");
-       this.repname = configdoc.getValue("repository_name");
-       this.reppath = configdoc.getValue("repository_path");
-       this.defaultspace = configdoc.getValue("defaultspace");
-       this.savedlist = configdoc.getValue("savedlist");
-       this.defaultDate = configdoc.getValue("defaultdate");
-       this.defaultUser = configdoc.getValue("defaultuser");
-       this.status = getStatus(configdoc.getValue("status"));
+        this.configdoc = xwiki.getDocument(page)
+        this.prjname = configdoc.getValue("name");
+        this.prjdesc = configdoc.getValue("description");
+        this.prjversion = configdoc.getValue("version");
+        this.contribVersion = configdoc.getValue("contribVersion");
+        this.xmlVersion = configdoc.getValue("xarXmlVersion");
+        this.gitlaburl = configdoc.getValue("gitlab_url");
+        this.repuser = configdoc.getValue("repository_user");
+        this.repname = configdoc.getValue("repository_name");
+        this.reppath = configdoc.getValue("repository_path");
+        this.defaultspace = configdoc.getValue("defaultspace");
+        this.savedlist = configdoc.getValue("savedlist");
+        this.defaultDate = configdoc.getValue("defaultdate");
+        this.defaultUser = configdoc.getValue("defaultuser");
+        this.status = getStatus(configdoc.getValue("status"));
 
-       if (contribVersion==null || contribVersion=="")
-         contribVersion = "8.4"
+        if (contribVersion==null || contribVersion=="")
+            contribVersion = "8.4"
 
-       if (xmlVersion==null || xmlVersion=="")
-         xmlVersion = "1.1"
+        if (xmlVersion==null || xmlVersion=="")
+            xmlVersion = "1.1"
 
-       def authobj = configdoc.getObject("GitLab.Code.GitLabAuthClass", "contextuser", context.user)
-       if (authobj) {
-         this.token = authobj.getProperty("token").property.value
-       }
+        def authobj = configdoc.getObject("GitLab.Code.GitLabAuthClass", "contextuser", context.user)
+        if (authobj) {
+            this.token = authobj.getProperty("token").property.value
+        }
 
-      //Basic authentication
-      // Create a GitLabApi instance to communicate with your GitLab server
-      gitlabapi = GitlabAPI.connect(gitlaburl, token)
+        //Basic authentication
+        // Create a GitLabApi instance to communicate with your GitLab server
+        gitlabapi = GitlabAPI.connect(gitlaburl, token)
 
-      gitlabproject = gitlabapi.getProject(repuser, repname)
-      debug("Project: ${gitlabproject}")
-      return (gitlabproject==null) ? null : "";
+        gitlabproject = gitlabapi.getProject(repuser, repname)
+        debug("Project: ${gitlabproject}")
+        return (gitlabproject==null) ? null : "";
     }
 
     public getStatus(status) {
-       def smap = new HashMap();
-       for (sline in StringUtils.split(status, "\r\n")) {
-          def items = sline.split(";");
-          smap.put(items[0], [ "xwikiversion" : (items.length&gt;1) ? items[1] : "", "xwikihash" : (items.length&gt;2) ? items[2] : "", "gitlabversion" : (items.length&gt;3) ? items[3] : "" ])
-       }
-       return smap;
+        def smap = new HashMap();
+        for (sline in StringUtils.split(status, "\r\n")) {
+            def items = sline.split(";");
+            smap.put(items[0], [ "xwikiversion" : (items.length&gt;1) ? items[1] : "", "xwikihash" : (items.length&gt;2) ? items[2] : "", "gitlabversion" : (items.length&gt;3) ? items[3] : "" ])
+        }
+        return smap;
     }
 
     public getPageStatus(filePath) {
-      return status.get(filePath);
+        return status.get(filePath);
     }
 
     public saveStatus() {
-       def sstatus = "";
-       for (key in status.keySet()) {
-         def stat = status.get(key);
-         sstatus += "${key};${stat.xwikiversion};${stat.xwikihash};${stat.gitlabversion}\n";
-       }
-       // only save if changed
-       if (status!=configdoc.getValue("status")) {
-        configdoc.set("status", sstatus);
-        configdoc.save();
-       }
+        def sstatus = "";
+        for (key in status.keySet()) {
+            def stat = status.get(key);
+            sstatus += "${key};${stat.xwikiversion};${stat.xwikihash};${stat.gitlabversion}\n";
+        }
+        // only save if changed
+        if (status!=configdoc.getValue("status")) {
+            configdoc.set("status", sstatus);
+            configdoc.save();
+        }
     }
 
     public debug(message) {
-       sdebug += message + "\n";
-       def cdate = new Date();
-       System.out.println("GITHUBAPP ${cdate}: ${message}");
+        sdebug += message + "\n";
+        def cdate = new Date();
+        System.out.println("GITHUBAPP ${cdate}: ${message}");
     }
 
     public getDebug() {
-       return this.sdebug;
+        return this.sdebug;
     }
 
     public getDefaultSpace() {
@@ -187,22 +187,22 @@ public class GitLabGroovy {
     }
 
     public getFilePath(pagedoc, nested) {
-       // get page
+        // get page
         def filePath = getSourcePath() + ((nested) ? pagedoc.getSpace().replaceAll("[.]","/") : pagedoc.getSpace()) + "/" + pagedoc.getName();
         def language = pagedoc.getLanguage();
         if (language!=null&amp;&amp;language!="")
-          filePath += "." + language;
+            filePath += "." + language;
         filePath += ".xml"
         return filePath;
     }
 
     public getStatusPath(pagedoc) {
-       // get page
-       def filePath = pagedoc.getSpace() + "/" + pagedoc.getName();
-       def language = pagedoc.getLanguage();
-       if (language!=null&amp;&amp;language!="")
-          filePath += "." + language;
-       return filePath;
+        // get page
+        def filePath = pagedoc.getSpace() + "/" + pagedoc.getName();
+        def language = pagedoc.getLanguage();
+        if (language!=null&amp;&amp;language!="")
+            filePath += "." + language;
+        return filePath;
     }
 
     public cleanXML(gitlabcontent, withFormat) {
@@ -212,14 +212,14 @@ public class GitLabGroovy {
     }
 
     public String getFileContentAsString(sha, withFormat) {
- /*       def dservice = new DataService(gitlabclient);
-        def blob = dservice.getBlob(repository, sha);
-        def gitlabcontent = new String(Base64.decodeBase64(blob.content.getBytes()), "UTF-8");
-        if (withFormat)
-         return cleanXML(gitlabcontent, true);
-        return gitlabcontent;
-*/
-   }
+        /*       def dservice = new DataService(gitlabclient);
+               def blob = dservice.getBlob(repository, sha);
+               def gitlabcontent = new String(Base64.decodeBase64(blob.content.getBytes()), "UTF-8");
+               if (withFormat)
+                return cleanXML(gitlabcontent, true);
+               return gitlabcontent;
+       */
+    }
 
 /*
     public String getFileContentAsString(String space, String page, String language) {
@@ -232,86 +232,86 @@ public class GitLabGroovy {
    }
 */
 
-   public getPOMFile() {
-      def escapetool = new EscapeTool();
-      def samplePOM = xwiki.getDocument("GitLab.Code.SamplePOM").getContent();
-      samplePOM = samplePOM.replaceAll("PRJNAME", prjname.toLowerCase().replaceAll(" ", "-"))
-      samplePOM = samplePOM.replaceAll("PRJPNAME", prjname)
-      samplePOM = samplePOM.replaceAll("PRJDESC", escapetool.xml(prjdesc))
-      samplePOM = samplePOM.replaceAll("PRJVERSION", prjversion)
-      samplePOM = samplePOM.replaceAll("CONTRIBVERSION", contribVersion)
-      samplePOM = samplePOM.replaceAll("XMLVERSION", xmlVersion)
-      samplePOM = samplePOM.replaceAll("REPOSITORY_NAME", repname)
-      samplePOM = samplePOM.replaceAll("REPOSITORY_USER", repuser)
-      samplePOM = samplePOM.replaceAll("USERNAME", username)
-      return samplePOM;
-   }
+    public getPOMFile() {
+        def escapetool = new EscapeTool();
+        def samplePOM = xwiki.getDocument("GitLab.Code.SamplePOM").getContent();
+        samplePOM = samplePOM.replaceAll("PRJNAME", prjname.toLowerCase().replaceAll(" ", "-"))
+        samplePOM = samplePOM.replaceAll("PRJPNAME", prjname)
+        samplePOM = samplePOM.replaceAll("PRJDESC", escapetool.xml(prjdesc))
+        samplePOM = samplePOM.replaceAll("PRJVERSION", prjversion)
+        samplePOM = samplePOM.replaceAll("CONTRIBVERSION", contribVersion)
+        samplePOM = samplePOM.replaceAll("XMLVERSION", xmlVersion)
+        samplePOM = samplePOM.replaceAll("REPOSITORY_NAME", repname)
+        samplePOM = samplePOM.replaceAll("REPOSITORY_USER", repuser)
+        samplePOM = samplePOM.replaceAll("USERNAME", username)
+        return samplePOM;
+    }
 
-   public getXML(pagedoc, boolean withFormat) {
+    public getXML(pagedoc, boolean withFormat) {
         def clonedDoc = pagedoc.document.clone();
         if (clonedDoc.getParent()=="") {
-          clonedDoc.setParent(clonedDoc.getSpace() + ".WebHome");
+            clonedDoc.setParent(clonedDoc.getSpace() + ".WebHome");
         }
 
         if (clonedDoc.getObject("XWiki.TranslationDocumentClass")) {
-          if (clonedDoc.getSyntaxId()!="plain/1.0") {
-            clonedDoc.setSyntaxId("plain/1.0");
-          }
-          if (!clonedDoc.isHidden()) {
-            clonedDoc.setHidden(true);
-          }
+            if (clonedDoc.getSyntaxId()!="plain/1.0") {
+                clonedDoc.setSyntaxId("plain/1.0");
+            }
+            if (!clonedDoc.isHidden()) {
+                clonedDoc.setHidden(true);
+            }
         }
 
         // remove Tag object
         if (clonedDoc.getObject("XWiki.TagClass")) {
-          clonedDoc.removeObject(clonedDoc.getObject("XWiki.TagClass"));
+            clonedDoc.removeObject(clonedDoc.getObject("XWiki.TagClass"));
         }
 
         // remove all gitlab authentication classes so that we don't commit passwords
         for (object in clonedDoc.getObjects("GitLab.Code.GitLabAuthClass")) {
-          clonedDoc.removeObject(object);
+            clonedDoc.removeObject(object);
         }
 
         // remove all gitlab authentication classes so that we don't commit passwords
         for (object in clonedDoc.getObjects("GitLabCode.GitLabConfigClass")) {
-          object.set("status", "", context.getContext())
+            object.set("status", "", context.getContext())
         }
 
         if (withFormat) {
-         clonedDoc.setCreator(DEFAULTAUTHOR);
-          clonedDoc.setContentAuthor(DEFAULTAUTHOR);
-          clonedDoc.setAuthor(DEFAULTAUTHOR);
+            clonedDoc.setCreator(DEFAULTAUTHOR);
+            clonedDoc.setContentAuthor(DEFAULTAUTHOR);
+            clonedDoc.setAuthor(DEFAULTAUTHOR);
 
         } else if (defaultUser &amp;&amp; defaultUser!="") {
-          clonedDoc.setCreator(defaultUser);
-          clonedDoc.setContentAuthor(defaultUser);
-          clonedDoc.setAuthor(defaultUser);
+            clonedDoc.setCreator(defaultUser);
+            clonedDoc.setContentAuthor(defaultUser);
+            clonedDoc.setAuthor(defaultUser);
         }  else {
-          clonedDoc.setCreator(clonedDoc.getAuthor());
-          clonedDoc.setContentAuthor(clonedDoc.getAuthor());
+            clonedDoc.setCreator(clonedDoc.getAuthor());
+            clonedDoc.setContentAuthor(clonedDoc.getAuthor());
         }
 
         if (defaultDate &amp;&amp; defaultDate!="") {
-          clonedDoc.setCreationDate(defaultDate);
-          clonedDoc.setContentUpdateDate(defaultDate);
-          clonedDoc.setDate(defaultDate);
-          clonedDoc.setVersion("1.1");
+            clonedDoc.setCreationDate(defaultDate);
+            clonedDoc.setContentUpdateDate(defaultDate);
+            clonedDoc.setDate(defaultDate);
+            clonedDoc.setVersion("1.1");
         } else {
-          clonedDoc.setContentUpdateDate(clonedDoc.getDate())
-          clonedDoc.setCreationDate(clonedDoc.getDate())
-          clonedDoc.setVersion("1.1");
+            clonedDoc.setContentUpdateDate(clonedDoc.getDate())
+            clonedDoc.setCreationDate(clonedDoc.getDate())
+            clonedDoc.setVersion("1.1");
         }
 
         // Update attachment dates
         for (xa in clonedDoc.getAttachmentList()) {
             xa.setVersion("1.1");
             if (defaultDate &amp;&amp; defaultDate!="") {
-               xa.setDate(defaultDate);
+                xa.setDate(defaultDate);
             }
             if (withFormat) {
-               xa.setAuthor(DEFAULTAUTHOR);
+                xa.setAuthor(DEFAULTAUTHOR);
             } else if (defaultUser &amp;&amp; defaultUser!="") {
-               xa.setAuthor(defaultUser);
+                xa.setAuthor(defaultUser);
             }
         }
 
@@ -322,24 +322,24 @@ public class GitLabGroovy {
         return (withFormat) ? format(c2, "") : c2;
     }
 
-  /**
-   * Creates a new file in the repository
-   *
-   * @param branchName The name of a repository branch
-   * @param commitMsg  The commit message
-   * @param actions    The actions to send
-   * @throws IOException on gitlab api call error
-   */
-   public gitLabCommits(String branchName, String commitMsg, Object actions) throws IOException {
-    String tailUrl = gitlabproject.URL + "/" + gitlabproject.getId() + "/repository/commits";
-    GitlabHTTPRequestor requestor = gitlabapi.dispatch();
+    /**
+     * Creates a new file in the repository
+     *
+     * @param branchName The name of a repository branch
+     * @param commitMsg  The commit message
+     * @param actions    The actions to send
+     * @throws IOException on gitlab api call error
+     */
+    public gitLabCommits(String branchName, String commitMsg, Object actions) throws IOException {
+        String tailUrl = gitlabproject.URL + "/" + gitlabproject.getId() + "/repository/commits";
+        GitlabHTTPRequestor requestor = gitlabapi.dispatch();
 
-    def req = requestor
-            .with("branch", branchName)
-            .with("commit_message", commitMsg)
-            .with("actions", actions);
-    debug("JSON: " + JsonOutput.toJson(req.data));
-    return req.to(tailUrl, GitlabCommit.class);
+        def req = requestor
+                .with("branch", branchName)
+                .with("commit_message", commitMsg)
+                .with("actions", actions);
+        debug("JSON: " + JsonOutput.toJson(req.data));
+        return req.to(tailUrl, GitlabCommit.class);
     }
 
     public commitFiles(pagelist, message, pom) {
@@ -356,28 +356,28 @@ public class GitLabGroovy {
         def entriesKeySet = getEntries("").keySet();
 
         for (pagename in pagelist) {
-           // separate the language particle at the end of the page name from the page fullname. The pagename is of form &lt;docfullname&gt;.&lt;doclanguage&gt;
-           def languageSeparator = pagename.lastIndexOf('.');
-           if (languageSeparator &lt; 0) {
-             def pagefullname = pagename;
-           }
-           def pagefullname = pagename.substring(0, languageSeparator);
-           def lang = pagename.substring(languageSeparator + 1);
-           def pagedoc = xwiki.getDocument(pagefullname);
-           // make sure we get the right translations
-           if (lang!=null &amp;&amp; lang!="") {
-             pagedoc = pagedoc.getTranslatedDocument(lang);
-           }
-           def space = pagedoc.getSpace();
-           def page = pagedoc.getName();
-           def language = pagedoc.getLanguage();
+            // separate the language particle at the end of the page name from the page fullname. The pagename is of form &lt;docfullname&gt;.&lt;doclanguage&gt;
+            def languageSeparator = pagename.lastIndexOf('.');
+            if (languageSeparator &lt; 0) {
+                def pagefullname = pagename;
+            }
+            def pagefullname = pagename.substring(0, languageSeparator);
+            def lang = pagename.substring(languageSeparator + 1);
+            def pagedoc = xwiki.getDocument(pagefullname);
+            // make sure we get the right translations
+            if (lang!=null &amp;&amp; lang!="") {
+                pagedoc = pagedoc.getTranslatedDocument(lang);
+            }
+            def space = pagedoc.getSpace();
+            def page = pagedoc.getName();
+            def language = pagedoc.getLanguage();
 
-           def pageList = pagesBySpace.get(space);
-           if (pageList==null) {
-              pageList = new ArrayList();
-              pagesBySpace.put(space, pageList);
-           }
-           pageList.add(pagedoc);
+            def pageList = pagesBySpace.get(space);
+            if (pageList==null) {
+                pageList = new ArrayList();
+                pagesBySpace.put(space, pageList);
+            }
+            pageList.add(pagedoc);
         }
 
         def committedPages = new ArrayList();
@@ -387,42 +387,42 @@ public class GitLabGroovy {
         def gitlabEntries = getEntries("");
 
         try {
-         for (space in pagesBySpace.keySet()) {
-            // loop on each page
-            for (pagedoc in pagesBySpace.get(space)) {  
-              pagename2 = pagedoc.getFullName();
-              def page = pagedoc.getName();
-              def language = pagedoc.getLanguage();
+            for (space in pagesBySpace.keySet()) {
+                // loop on each page
+                for (pagedoc in pagesBySpace.get(space)) {
+                    pagename2 = pagedoc.getFullName();
+                    def page = pagedoc.getName();
+                    def language = pagedoc.getLanguage();
 
-              // find page Path
-              def result = findPage(gitlabEntries, pagedoc);
-              def entry = result.entry;
-              def filePath = result.filePath;
+                    // find page Path
+                    def result = findPage(gitlabEntries, pagedoc);
+                    def entry = result.entry;
+                    def filePath = result.filePath;
 
-              def newXML = getXML(pagedoc, true);
-              def newData = newXML.getBytes();
+                    def newXML = getXML(pagedoc, true);
+                    def newData = newXML.getBytes();
 
-              def action = [:];
-              action.action = (entry!=null) ? "update" : "create";
-              action.file_path = filePath;
-              action.content = newXML;
+                    def action = [:];
+                    action.action = (entry!=null) ? "update" : "create";
+                    action.file_path = filePath;
+                    action.content = newXML;
 
-              // adding the page
-              actions.add(action);
+                    // adding the page
+                    actions.add(action);
 
-              if (!newPages.contains(filePath)) {
-                def oldData = currentPageData.get(filePath);
-                // updating status to check for changes
-                committedPages.add(getStatusPath(pagedoc));
-                def pageStatus = status.get(getStatusPath(pagedoc));
-                if (pageStatus==null)
-                 pageStatus = [ "xwikiversion" : "", "xwikihash" : "", "gitlabversion" : ""];
-                status.put(getStatusPath(pagedoc), pageStatus);
-                pageStatus.xwikiversion = "${pagedoc.getVersion()}";
-                pageStatus.xwikihash = "${newXML.hashCode()}";
-              }
+                    if (!newPages.contains(filePath)) {
+                        def oldData = currentPageData.get(filePath);
+                        // updating status to check for changes
+                        committedPages.add(getStatusPath(pagedoc));
+                        def pageStatus = status.get(getStatusPath(pagedoc));
+                        if (pageStatus==null)
+                            pageStatus = [ "xwikiversion" : "", "xwikihash" : "", "gitlabversion" : ""];
+                        status.put(getStatusPath(pagedoc), pageStatus);
+                        pageStatus.xwikiversion = "${pagedoc.getVersion()}";
+                        pageStatus.xwikihash = "${newXML.hashCode()}";
+                    }
+                }
             }
-         }
         } catch (Throwable e) {
             e.printStackTrace();
             debug("error preparing commit on page ${pagename2}: " + e.getMessage());
@@ -434,10 +434,10 @@ public class GitLabGroovy {
         if (pom=="1") {
             def action = [:];
             try {
-              gitlabapi.getRepositoryFile(gitlabproject, "pom.xml", "master")
-              action.action = "update"
+                gitlabapi.getRepositoryFile(gitlabproject, "pom.xml", "master")
+                action.action = "update"
             } catch(e) {
-              action.action = "create"
+                action.action = "create"
             }
             action.file_path = "pom.xml";
             action.content = getPOMFile();
@@ -459,33 +459,33 @@ public class GitLabGroovy {
     }
 
     public findPage(entries, pagedoc) {
-          def filePath = getFilePath(pagedoc, false);
-          debug("Check ${filePath} in entries");
-          def entry = entries.get(filePath);
-          if (entry==null) {
-             filePath = getFilePath(pagedoc, true);
-             debug("Check ${filePath} in entries");
-             entry = entries.get(filePath);
-          }
-          return [ entry : entry, filePath : filePath ];
+        def filePath = getFilePath(pagedoc, false);
+        debug("Check ${filePath} in entries");
+        def entry = entries.get(filePath);
+        if (entry==null) {
+            filePath = getFilePath(pagedoc, true);
+            debug("Check ${filePath} in entries");
+            entry = entries.get(filePath);
+        }
+        return [ entry : entry, filePath : filePath ];
     }
 
     protected checkPage(page, pagedoc, changedMap, samePages, gitlabEntries) {
-           def wikicontent = getXML(pagedoc, true);
-           def wikihash = (wikicontent==null) ? "" : "${wikicontent.hashCode()}";
+        def wikicontent = getXML(pagedoc, true);
+        def wikihash = (wikicontent==null) ? "" : "${wikicontent.hashCode()}";
 
-           def wikicontent_unformatted = getXML(pagedoc, false);
+        def wikicontent_unformatted = getXML(pagedoc, false);
 
-           def result = findPage(gitlabEntries, pagedoc);
-           def entry = result.entry;
-           def filePath = result.filePath;
-           debug("Check ${filePath} ${wikihash}");
+        def result = findPage(gitlabEntries, pagedoc);
+        def entry = result.entry;
+        def filePath = result.filePath;
+        debug("Check ${filePath} ${wikihash}");
 
-           if (entry==null || !wikihash.equals(entry.gitlabhash) || !wikihash.equals(entry.gitlabhash_unformatted)) {
+        if (entry==null || !wikihash.equals(entry.gitlabhash) || !wikihash.equals(entry.gitlabhash_unformatted)) {
             def pageStatus = getPageStatus(getStatusPath(pagedoc));
             if (pageStatus==null) {
-               pageStatus = [ "xwikiversion" : pagedoc.getVersion(), "xwikihash" : "", "gitlabversion" : "", "gitlabsha" : (entry==null) ? "" : entry.gitlabsha ];
-               status.put(getStatusPath(pagedoc), pageStatus);
+                pageStatus = [ "xwikiversion" : pagedoc.getVersion(), "xwikihash" : "", "gitlabversion" : "", "gitlabsha" : (entry==null) ? "" : entry.gitlabsha ];
+                status.put(getStatusPath(pagedoc), pageStatus);
             }
             pageStatus.filePath = filePath;
             pageStatus.page = page;
@@ -501,28 +501,28 @@ public class GitLabGroovy {
             } else if (entry==null &amp;&amp; !pagedoc.isNew()) {
                 pageStatus.status = "A";
             } else if (pageStatus.xwikihash=="") {
-               def gitlabsha = (entry==null) ? "" : entry.gitlabsha;
-               if (gitlabsha=="")
-                pageStatus.status = "A";
-               else
-                pageStatus.status = "?";
+                def gitlabsha = (entry==null) ? "" : entry.gitlabsha;
+                if (gitlabsha=="")
+                    pageStatus.status = "A";
+                else
+                    pageStatus.status = "?";
             } else if (pagedoc.getVersion().equals(pageStatus.xwikiversion)) {
-               // version has not changed in the wikia
-               def whash = "${wikicontent.hashCode()}";
-               // if the recorded hash is the same then we have a modified version in GitLab
-               // otherwise it's a bad state so it's a conflict
-               if (whash == pageStatus.xwikihash)
-                pageStatus.status = "U";
-               else
-                pageStatus.status = "C";
+                // version has not changed in the wikia
+                def whash = "${wikicontent.hashCode()}";
+                // if the recorded hash is the same then we have a modified version in GitLab
+                // otherwise it's a bad state so it's a conflict
+                if (whash == pageStatus.xwikihash)
+                    pageStatus.status = "U";
+                else
+                    pageStatus.status = "C";
             } else {
-               def gitlabsha = (entry==null) ? "" : entry.gitlabsha;
-               if (gitlabsha=="")
-                pageStatus.status = "A";
-               else if(pageStatus.gitlabsha==gitlabsha) 
-                pageStatus.status = "M";
-               else
-                pageStatus.status = "C";
+                def gitlabsha = (entry==null) ? "" : entry.gitlabsha;
+                if (gitlabsha=="")
+                    pageStatus.status = "A";
+                else if(pageStatus.gitlabsha==gitlabsha)
+                    pageStatus.status = "M";
+                else
+                    pageStatus.status = "C";
             }
 
             // we do not check the parent anymore because we force it's value as we cannot edit it
@@ -532,33 +532,33 @@ public class GitLabGroovy {
 
             // verify default language
             if (pagedoc.getLanguage()=="") {
-               if (pagedoc.getDefaultLanguage()!="" &amp;&amp; pagedoc.getTranslationList().size()==0)
-                pageStatus.status += " - Default language should be empty"
+                if (pagedoc.getDefaultLanguage()!="" &amp;&amp; pagedoc.getTranslationList().size()==0)
+                    pageStatus.status += " - Default language should be empty"
             }
 
             changedMap.put(page, pageStatus)
-           } else {
-             samePages.add(filePath);
-             def pageStatus = getPageStatus(getStatusPath(pagedoc));
-             if (pageStatus==null) {
+        } else {
+            samePages.add(filePath);
+            def pageStatus = getPageStatus(getStatusPath(pagedoc));
+            if (pageStatus==null) {
                 pageStatus = [ "xwikiversion" : "", "xwikihash" : "", "gitlabversion" : "", , "gitlabsha" : "" ];
                 status.put(getStatusPath(pagedoc), pageStatus);
-             }   
-             pageStatus.xwikiversion = pagedoc.getVersion();
-             pageStatus.xwikihash = wikicontent.hashCode();
-             if (entry!=null) {
-             	pageStatus.gitlabversion = entry.gitlabversion;
+            }
+            pageStatus.xwikiversion = pagedoc.getVersion();
+            pageStatus.xwikihash = wikicontent.hashCode();
+            if (entry!=null) {
+                pageStatus.gitlabversion = entry.gitlabversion;
                 pageStatus.gitlabsha = entry.gitlabsha;
-             }
-           }
+            }
+        }
     }
 
     public containsSpace(spaceName, spaceList) {
-      for (item in spaceList) {
-         if (spaceName.startsWith(item))
-            return true;
-      }
-      return false;
+        for (item in spaceList) {
+            if (spaceName.startsWith(item))
+                return true;
+        }
+        return false;
     }
 
     public getChangedPages(String spaces, String savedlist) {
@@ -569,70 +569,70 @@ public class GitLabGroovy {
         def list;
 
         if (!savedlist || savedlist=="") {
-         spaceList = Arrays.asList(StringUtils.split(spaces," ,"));
-         def joinList = [];
-         for (space in spaceList) {
-           joinList.add("doc.fullName like '${space}%'")
-         }
-         def whereSpace = StringUtils.join(joinList, " or ");
-         def sql = "select distinct doc.fullName from XWikiDocument as doc where ${whereSpace}";
-         debug("Searching for ${sql}");
-         list = xwiki.search(sql)
+            spaceList = Arrays.asList(StringUtils.split(spaces," ,"));
+            def joinList = [];
+            for (space in spaceList) {
+                joinList.add("doc.fullName like '${space}%'")
+            }
+            def whereSpace = StringUtils.join(joinList, " or ");
+            def sql = "select distinct doc.fullName from XWikiDocument as doc where ${whereSpace}";
+            debug("Searching for ${sql}");
+            list = xwiki.search(sql)
         } else {
-         list = StringUtils.split(xwiki.getDocument(savedlist).getValue("list"), "|");
+            list = StringUtils.split(xwiki.getDocument(savedlist).getValue("list"), "|");
         }
 
         for (page in list) {
-           def pagedoc = xwiki.getDocument(page);
-           checkPage(page, pagedoc, changedMap, samePages, gitlabEntries);
+            def pagedoc = xwiki.getDocument(page);
+            checkPage(page, pagedoc, changedMap, samePages, gitlabEntries);
 
-           if (pagedoc.isNew()) {
-             debug("GitLabApp: error reading page ${pagedoc.fullName} which should exist");
-           }
+            if (pagedoc.isNew()) {
+                debug("GitLabApp: error reading page ${pagedoc.fullName} which should exist");
+            }
 
-           def transList = null
-           try {
-            transList = pagedoc.getTranslationList();
-           } catch (Exception e) {
-             System.out.println("Exception getting trans list of ${pagedoc.fullName} store ${pagedoc.store}: " + e.getMessage());
-             e.printStackTrace();
-             transList = [];
-           }
-           for (trans in transList) {
-               def tpagedoc = pagedoc.getTranslatedDocument(trans);
-               checkPage(page + "." + tpagedoc.language, tpagedoc, changedMap, samePages, gitlabEntries);
-           }
+            def transList = null
+            try {
+                transList = pagedoc.getTranslationList();
+            } catch (Exception e) {
+                System.out.println("Exception getting trans list of ${pagedoc.fullName} store ${pagedoc.store}: " + e.getMessage());
+                e.printStackTrace();
+                transList = [];
+            }
+            for (trans in transList) {
+                def tpagedoc = pagedoc.getTranslatedDocument(trans);
+                checkPage(page + "." + tpagedoc.language, tpagedoc, changedMap, samePages, gitlabEntries);
+            }
         }
- 
+
         if (spaceList!=null) {
-         for (filePath in gitlabEntries.keySet()) {
-             def entry = gitlabEntries.get(filePath);
-             def i0 = getSourcePath().size()
-             def i1 = filePath.lastIndexOf("/");
-             def i2 = filePath.indexOf(".xml");
-             def spaceName = (i1==-1) ? filePath : filePath.substring(i0, i1);
-             spaceName = spaceName.replaceAll("/", ".")
-             def page = (i2==-1) ? filePath : filePath.substring(i1+1, i2);
-             def language = "";
-             def pageName = page;
-             if (page.contains(".")) {
-               def i3 = page.indexOf(".");
-               language = page.substring(i3+1);
-               pageName = page.substring(0, i3);
-             }
-             debug("SpaceName: ${spaceName} SpaceList: ${spaceList} SamePages: ${samePages} FilePath: ${filePath} Page: ${spaceName}.${page}")
-             if (containsSpace(spaceName, spaceList)&amp;&amp;!samePages.contains(filePath)&amp;&amp;!changedMap.keySet().contains(spaceName + "." + page)) {
-               changedMap.put(spaceName + "." + pageName, [ "fullname" : "${spaceName}.${pageName}", "language" : language, "status" : "N", "xwikiversion" : "", "gitlabsha" : entry.gitlabsha ])
-               debug("Adding page ${spaceName}.${page}")
-             } else {
-               if (!containsSpace(spaceName, spaceList))
-                 debug("${spaceName} not in ${spaceList}")
-               if (samePages.contains(filePath)) 
-                 debug("${filePath} already in list")
-               if (changedMap.keySet().contains(spaceName + "." + page))
-                 debug("${spaceName}.${page} already in list")
-             }
-         }
+            for (filePath in gitlabEntries.keySet()) {
+                def entry = gitlabEntries.get(filePath);
+                def i0 = getSourcePath().size()
+                def i1 = filePath.lastIndexOf("/");
+                def i2 = filePath.indexOf(".xml");
+                def spaceName = (i1==-1) ? filePath : filePath.substring(i0, i1);
+                spaceName = spaceName.replaceAll("/", ".")
+                def page = (i2==-1) ? filePath : filePath.substring(i1+1, i2);
+                def language = "";
+                def pageName = page;
+                if (page.contains(".")) {
+                    def i3 = page.indexOf(".");
+                    language = page.substring(i3+1);
+                    pageName = page.substring(0, i3);
+                }
+                debug("SpaceName: ${spaceName} SpaceList: ${spaceList} SamePages: ${samePages} FilePath: ${filePath} Page: ${spaceName}.${page}")
+                if (containsSpace(spaceName, spaceList)&amp;&amp;!samePages.contains(filePath)&amp;&amp;!changedMap.keySet().contains(spaceName + "." + page)) {
+                    changedMap.put(spaceName + "." + pageName, [ "fullname" : "${spaceName}.${pageName}", "language" : language, "status" : "N", "xwikiversion" : "", "gitlabsha" : entry.gitlabsha ])
+                    debug("Adding page ${spaceName}.${page}")
+                } else {
+                    if (!containsSpace(spaceName, spaceList))
+                        debug("${spaceName} not in ${spaceList}")
+                    if (samePages.contains(filePath))
+                        debug("${filePath} already in list")
+                    if (changedMap.keySet().contains(spaceName + "." + page))
+                        debug("${spaceName}.${page} already in list")
+                }
+            }
         }
         // saveStatus if changed
         saveStatus();
@@ -644,104 +644,104 @@ public class GitLabGroovy {
         def gitlabEntries = getEntries(spaces);
 
         for (pageobj in pageList) {
-           def page = pageobj.page;
-           def sha = pageobj.sha;
+            def page = pageobj.page;
+            def sha = pageobj.sha;
 
-           debug("Ready to update: ${page} ${sha}");
+            debug("Ready to update: ${page} ${sha}");
 
-           // separate the language particle at the end of the page name from the page fullname. The pagename is of form &lt;docfullname&gt;.&lt;doclanguage&gt;
-           def languageSeparator = page.lastIndexOf('.');
-           if (languageSeparator &lt; 0) {
-             def pagefullname = page;
-           }
-           def pagefullname = page.substring(0, languageSeparator);
-           def lang = page.substring(languageSeparator + 1);
+            // separate the language particle at the end of the page name from the page fullname. The pagename is of form &lt;docfullname&gt;.&lt;doclanguage&gt;
+            def languageSeparator = page.lastIndexOf('.');
+            if (languageSeparator &lt; 0) {
+                def pagefullname = page;
+            }
+            def pagefullname = page.substring(0, languageSeparator);
+            def lang = page.substring(languageSeparator + 1);
 
-           def pagedoc = xwiki.getDocument(pagefullname);
-           if (lang!=null &amp;&amp; lang!="") {
-             pagedoc = pagedoc.getTranslatedDocument(lang);
-           }
-           def wikicontent = getXML(pagedoc, true);
+            def pagedoc = xwiki.getDocument(pagefullname);
+            if (lang!=null &amp;&amp; lang!="") {
+                pagedoc = pagedoc.getTranslatedDocument(lang);
+            }
+            def wikicontent = getXML(pagedoc, true);
 
 
-           def result = findPage(gitlabEntries, pagedoc);
-           def entry = result.entry;
-           def filePath = result.filePath;             
-           def gitlabversion = (entry==null) ? "" : entry.gitlabversion;
-           def gitlabcontent = (entry==null) ? "" : entry.gitlabcontent;
+            def result = findPage(gitlabEntries, pagedoc);
+            def entry = result.entry;
+            def filePath = result.filePath;
+            def gitlabversion = (entry==null) ? "" : entry.gitlabversion;
+            def gitlabcontent = (entry==null) ? "" : entry.gitlabcontent;
 
-           debug("Ready to update: ${filePath}");
+            debug("Ready to update: ${filePath}");
 
-           if (!wikicontent.equals(gitlabcontent) &amp;&amp; gitlabcontent!=null &amp;&amp; gitlabcontent!="") {
-              def pageStatus = getPageStatus(getStatusPath(pagedoc));
-              if (pageStatus==null) {
-               pageStatus = [ "xwikiversion" : pagedoc.getVersion(), "xwikihash" : "", "gitlabversion" : "" ];
-              }
-              pageStatus.filePath = filePath;
-              pageStatus.page = pagefullname;
-              pageStatus.status = "";
+            if (!wikicontent.equals(gitlabcontent) &amp;&amp; gitlabcontent!=null &amp;&amp; gitlabcontent!="") {
+                def pageStatus = getPageStatus(getStatusPath(pagedoc));
+                if (pageStatus==null) {
+                    pageStatus = [ "xwikiversion" : pagedoc.getVersion(), "xwikihash" : "", "gitlabversion" : "" ];
+                }
+                pageStatus.filePath = filePath;
+                pageStatus.page = pagefullname;
+                pageStatus.status = "";
 
-              // updating XWiki document from GitLab
-              changedMap.put(pagefullname, pageStatus);
-              def archive = pagedoc.document.getDocumentArchive(context.getContext());
-              def version = pagedoc.document.getRCSVersion();
+                // updating XWiki document from GitLab
+                changedMap.put(pagefullname, pageStatus);
+                def archive = pagedoc.document.getDocumentArchive(context.getContext());
+                def version = pagedoc.document.getRCSVersion();
 
-              def newdoc = new XWikiDocument();
-              newdoc.fromXML(gitlabcontent);
-             
-              // check attachments that do not exist in updated pages and delete them to recycle bin
-              for (xa in pagedoc.getAttachmentList()) {
+                def newdoc = new XWikiDocument();
+                newdoc.fromXML(gitlabcontent);
+
+                // check attachments that do not exist in updated pages and delete them to recycle bin
+                for (xa in pagedoc.getAttachmentList()) {
                     if (!newdoc.getAttachment(xa.getFilename())) {
-                       pagedoc.document.deleteAttachment(xa.attachment, true, context.getContext());
+                        pagedoc.document.deleteAttachment(xa.attachment, true, context.getContext());
                     }
-              }
+                }
 
-              // Make sure they are not marked dirty
-              for (xa in newdoc.getAttachmentList()) {
+                // Make sure they are not marked dirty
+                for (xa in newdoc.getAttachmentList()) {
                     xa.setMetaDataDirty(false);
                     xa.getAttachment_content().setContentDirty(false);
-              }
+                }
 
-              // we need to make sure previous history is kept
-              newdoc.setDocumentArchive(archive);
+                // we need to make sure previous history is kept
+                newdoc.setDocumentArchive(archive);
 
-              // we need to keep the creator if there was already a document
-              if (pagedoc.getCreator()!=null)
-               newdoc.setCreator(pagedoc.getCreator());
+                // we need to keep the creator if there was already a document
+                if (pagedoc.getCreator()!=null)
+                    newdoc.setCreator(pagedoc.getCreator());
 
-              // set user and author to current user
-              newdoc.setContentAuthor(context.getUser());
-              newdoc.setAuthor(context.getUser());
+                // set user and author to current user
+                newdoc.setContentAuthor(context.getUser());
+                newdoc.setAuthor(context.getUser());
 
-              // we need to make sure no version is added
-              if (pagedoc.isNew()) {
-                newdoc.setMetaDataDirty(true);
-                newdoc.setContentDirty(true);
-                newdoc.setRCSVersion(null);
-              } else {
-                newdoc.setMetaDataDirty(true);
-                newdoc.setContentDirty(true);
-              }
+                // we need to make sure no version is added
+                if (pagedoc.isNew()) {
+                    newdoc.setMetaDataDirty(true);
+                    newdoc.setContentDirty(true);
+                    newdoc.setRCSVersion(null);
+                } else {
+                    newdoc.setMetaDataDirty(true);
+                    newdoc.setContentDirty(true);
+                }
 
-              // saving document
-              xwiki.getXWiki().saveDocument(newdoc, "Updated from GITHUB", context.getContext());
+                // saving document
+                xwiki.getXWiki().saveDocument(newdoc, "Updated from GITHUB", context.getContext());
 
-              // saving attachments
-              newdoc.saveAllAttachments(false, true, context.getContext());
+                // saving attachments
+                newdoc.saveAllAttachments(false, true, context.getContext());
 
-              // we need to force the saving the document archive.
-              if (newdoc.getDocumentArchive() != null) {
-                  xwiki.getXWiki().getVersioningStore().saveXWikiDocArchive(newdoc.getDocumentArchive(context.getContext()), true, context.getContext());
-              }
- 
-              // reading the information to set the status
-              def newpagedoc = xwiki.getDocument(pagedoc.getFullName());
-              def newwikicontent = getXML(pagedoc, true);
-              pageStatus.xwikiversion = pagedoc.getVersion();
-              pageStatus.xwikihash = "${newwikicontent.hashCode()}";  
-              pageStatus.gitlabversion = gitlabversion;    
+                // we need to force the saving the document archive.
+                if (newdoc.getDocumentArchive() != null) {
+                    xwiki.getXWiki().getVersioningStore().saveXWikiDocArchive(newdoc.getDocumentArchive(context.getContext()), true, context.getContext());
+                }
+
+                // reading the information to set the status
+                def newpagedoc = xwiki.getDocument(pagedoc.getFullName());
+                def newwikicontent = getXML(pagedoc, true);
+                pageStatus.xwikiversion = pagedoc.getVersion();
+                pageStatus.xwikihash = "${newwikicontent.hashCode()}";
+                pageStatus.gitlabversion = gitlabversion;
             }
-        } 
+        }
         // saveStatus if changed
         saveStatus();
         return changedMap;
@@ -783,31 +783,31 @@ public class GitLabGroovy {
         str += "${prefix}page${sep}language${sep}version${sep}isnew${sep}hash${sep}gitlabpath${sep}gitlabversion${sep}gitlabhash${sep}isdiff\n"
 
         while (spaceIterator.hasNext()) {
-              def space = entry.getName().toString();
-              // Collection pageEntries = repository.getDir(space, -1, null, (Collection) null);
-              Iterator pageIterator = null;
-              while (pageIterator.hasNext()) {
-                 def pageEntry = pageIterator.next();
-                 def fileName = pageEntry.getName().toString();
-                 def i1 = fileName.indexOf(".xml");
-                 def pageName = (i1==-1) ? fileName : fileName.substring(0, i1);
-                 pageName = space + "." + pageName;
-                 def pagedoc = xwiki.getDocument(pageName);
-                 def pagexml = getXML(pagedoc, true);
+            def space = entry.getName().toString();
+            // Collection pageEntries = repository.getDir(space, -1, null, (Collection) null);
+            Iterator pageIterator = null;
+            while (pageIterator.hasNext()) {
+                def pageEntry = pageIterator.next();
+                def fileName = pageEntry.getName().toString();
+                def i1 = fileName.indexOf(".xml");
+                def pageName = (i1==-1) ? fileName : fileName.substring(0, i1);
+                pageName = space + "." + pageName;
+                def pagedoc = xwiki.getDocument(pageName);
+                def pagexml = getXML(pagedoc, true);
 
-                 def baos = new ByteArrayOutputStream();
-                 // debug("reading file: ${space}/${fileName}")
-                 // repository.getFile(space + "/" + fileName, -1, fileProperties, baos);
-                 def gitlabcontent = new String(baos.toByteArray())
+                def baos = new ByteArrayOutputStream();
+                // debug("reading file: ${space}/${fileName}")
+                // repository.getFile(space + "/" + fileName, -1, fileProperties, baos);
+                def gitlabcontent = new String(baos.toByteArray())
 
-                 def version = (pagedoc==null) ? "" : pagedoc.getVersion();
-                 def hash = (pagexml==null) ? "" : pagexml.hashCode();
-                 def gitlabversion = pageEntry.getRevision().toString();
-                 def gitlabhash = (gitlabcontent==null) ? "" : gitlabcontent.hashCode();
+                def version = (pagedoc==null) ? "" : pagedoc.getVersion();
+                def hash = (pagexml==null) ? "" : pagexml.hashCode();
+                def gitlabversion = pageEntry.getRevision().toString();
+                def gitlabhash = (gitlabcontent==null) ? "" : gitlabcontent.hashCode();
 
-                 def isdiff = !pagexml.equals(gitlabcontent)
-                 if (!updatedonly || !isdiff)
-                  str += "${prefix}${pageName}${sep}${pagedoc.getLanguage()}${sep}${version}${sep}${pagedoc.isNew()}${sep}${hash}${sep}${space}/${fileName}${sep}${gitlabversion}${sep}${gitlabhash}${sep}${isdiff}\n"
+                def isdiff = !pagexml.equals(gitlabcontent)
+                if (!updatedonly || !isdiff)
+                    str += "${prefix}${pageName}${sep}${pagedoc.getLanguage()}${sep}${version}${sep}${pagedoc.isNew()}${sep}${hash}${sep}${space}/${fileName}${sep}${gitlabversion}${sep}${gitlabhash}${sep}${isdiff}\n"
             }
         }
         return str;
@@ -816,43 +816,43 @@ public class GitLabGroovy {
     public getBasePath() {
         def basepath = reppath;
         if (basepath.startsWith("/"))
-         basepath = srcpath.substring(1);
+            basepath = srcpath.substring(1);
         if (basepath=="")
-         return "";
+            return "";
         else if (basepath.endsWith("/"))
-         return basepath;
+            return basepath;
         else
-         return basepath + "/";
+            return basepath + "/";
     }
 
     public getSourcePath() {
         def srcpath = getBasePath();
 
         if (repsrcpath==""||repsrcpath=="/"||repsrcpath==".")
-         return srcpath;
+            return srcpath;
         else if (repsrcpath.startsWith("/"))
-         srcpath = srcpath + repsrcpath.substring(0);
+            srcpath = srcpath + repsrcpath.substring(0);
         else
-         srcpath = srcpath + repsrcpath;
+            srcpath = srcpath + repsrcpath;
 
         if (srcpath=="")
-         return "";
+            return "";
         else if (srcpath.endsWith("/"))
-         return srcpath
+            return srcpath
         else
-         return srcpath + "/";
+            return srcpath + "/";
     }
 
     public matchSpace(path, spaces) {
-      if (spaces==null)
-       return true;
+        if (spaces==null)
+            return true;
 
-      for (space in spaces.split(",")) {
-        if (path.startsWith(space.replaceAll("[.]", "/"))) {
-           return true;
+        for (space in spaces.split(",")) {
+            if (path.startsWith(space.replaceAll("[.]", "/"))) {
+                return true;
+            }
         }
-      }
-      return false;
+        return false;
     }
 
     public getEntries(String spaces) {
@@ -861,19 +861,19 @@ public class GitLabGroovy {
         def tree = gitlabapi.getRepositoryTree(gitlabproject, "", null, true);
         def srcPath = getSourcePath();
         for (file in tree) {
-           if (file.type=="blob") {
-            if (file.path.startsWith(srcPath)) {
-             def file2 = gitlabapi.getRepositoryFile(gitlabproject, file.path, "master")
-             def gitlabcontent = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8"); 
-             // calculate the hash before formatting
-             def gitlabhash_unformatted = (gitlabcontent==null) ? "" : gitlabcontent.hashCode();
-             gitlabcontent = cleanXML(gitlabcontent, true);
-             def gitlabhash = (gitlabcontent==null) ? "" : gitlabcontent.hashCode();
-             def gitlabversion = 0;
-             entries.put(file.path, [ "gitlabversion" : gitlabversion, "gitlabsha" : file.id, "gitlabhash" : "${gitlabhash}", "gitlabhash_unformatted" : "${gitlabhash_unformatted}", "gitlabcontent" : gitlabcontent ]);
-             debug("Adding: ${file.path}");
+            if (file.type=="blob") {
+                if (file.path.startsWith(srcPath)) {
+                    def file2 = gitlabapi.getRepositoryFile(gitlabproject, file.path, "master")
+                    def gitlabcontent = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8");
+                    // calculate the hash before formatting
+                    def gitlabhash_unformatted = (gitlabcontent==null) ? "" : gitlabcontent.hashCode();
+                    gitlabcontent = cleanXML(gitlabcontent, true);
+                    def gitlabhash = (gitlabcontent==null) ? "" : gitlabcontent.hashCode();
+                    def gitlabversion = 0;
+                    entries.put(file.path, [ "gitlabversion" : gitlabversion, "gitlabsha" : file.id, "gitlabhash" : "${gitlabhash}", "gitlabhash_unformatted" : "${gitlabhash_unformatted}", "gitlabcontent" : gitlabcontent ]);
+                    debug("Adding: ${file.path}");
+                }
             }
-           }
         }
         // debug("Entries: ${entries}")
         return entries;
@@ -881,109 +881,109 @@ public class GitLabGroovy {
 
     public showXMLDiff(pagedoc, filePath, withFormat) {
         def file2 = gitlabapi.getRepositoryFile(gitlabproject, filePath, "master")
-        def gitlabxml = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8"); 
+        def gitlabxml = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8");
         if (withFormat)
-           gitlabxml = cleanXML(gitlabxml, true);
+            gitlabxml = cleanXML(gitlabxml, true);
         debug("Gitlab hash " + gitlabxml.hashCode())
         def xml = getXML(pagedoc, true);
         debug("XWiki hash " + xml.hashCode())
 
         if (pagedoc.isNew() &amp;&amp; gitlabxml == null)
-         return "Document does not exist";
+            return "Document does not exist";
 
         if (pagedoc.isNew())
-         return "Document does not exist in the wiki"
+            return "Document does not exist in the wiki"
 
         if (gitlabxml==null)
-         return "Document does not exist in GitLab"
+            return "Document does not exist in GitLab"
 
         // remove attachment content from xml
         gitlabxml = gitlabxml.replaceAll("(?s)&lt;attachment&gt;(.*?)&lt;content&gt;(.*?)&lt;/content&gt;(.*?)&lt;/attachment&gt;", "&lt;attachment&gt;\$1&lt;content&gt;&lt;/content&gt;\$3&lt;/attachment&gt;")
         xml = xml.replaceAll("(?s)&lt;attachment&gt;(.*?)&lt;content&gt;(.*?)&lt;/content&gt;(.*?)&lt;/attachment&gt;",
-                      "&lt;attachment&gt;\$1&lt;content&gt;&lt;/content&gt;\$3&lt;/attachment&gt;")
+                "&lt;attachment&gt;\$1&lt;content&gt;&lt;/content&gt;\$3&lt;/attachment&gt;")
         return xwiki.diff.getDifferencesAsHTML(gitlabxml, xml, false);
     }
 
-   // Adding class and method to perform indentation and cleanup
-public class XWikiXMLWriter extends XMLWriter
-{
-    /**
-     * True if we use an output format.
-     */
-    private boolean useFormat;
-
-    /**
-     * @param output the stream where to write the XML
-     * @throws UnsupportedEncodingException in case encoding issue
-     */
-    public XWikiXMLWriter(OutputStream output) throws UnsupportedEncodingException
+    // Adding class and method to perform indentation and cleanup
+    public class XWikiXMLWriter extends XMLWriter
     {
-        super(output);
-    }
+        /**
+         * True if we use an output format.
+         */
+        private boolean useFormat;
 
-    /**
-     * @param output the stream where to write the XML
-     * @param format the style to use when outputting the XML
-     * @throws UnsupportedEncodingException in case encoding issue
-     */
-    public XWikiXMLWriter(OutputStream output, OutputFormat format) throws UnsupportedEncodingException
-    {
-        super(output, format);
-        this.useFormat = true;
-    }
-
-    @Override
-    protected void writeComment(String text) throws IOException
-    {
-        super.writeComment(text);
-
-        // Add a new line after the license declaration
-        if (text.contains("See the NOTICE file distributed with this work for additional")) {
-            println();
+        /**
+         * @param output the stream where to write the XML
+         * @throws UnsupportedEncodingException in case encoding issue
+         */
+        public XWikiXMLWriter(OutputStream output) throws UnsupportedEncodingException
+        {
+            super(output);
         }
-    }
 
-    @Override
-    protected void writeNodeText(Node node) throws IOException
-    {
-        if (this.useFormat &amp;&amp; node.getText().trim().length() == 0) {
-          // Check if parent node contains non text nodes
-            boolean containsNonTextNode = false;
-            for (Object object : node.getParent().content()) {
-                Node objectNode = (Node) object;
-                if (objectNode.getNodeType() != Node.TEXT_NODE) {
-                    containsNonTextNode = true;
-                    break;
-                }
+        /**
+         * @param output the stream where to write the XML
+         * @param format the style to use when outputting the XML
+         * @throws UnsupportedEncodingException in case encoding issue
+         */
+        public XWikiXMLWriter(OutputStream output, OutputFormat format) throws UnsupportedEncodingException
+        {
+            super(output, format);
+            this.useFormat = true;
+        }
+
+        @Override
+        protected void writeComment(String text) throws IOException
+        {
+            super.writeComment(text);
+
+            // Add a new line after the license declaration
+            if (text.contains("See the NOTICE file distributed with this work for additional")) {
+                println();
             }
-            if (containsNonTextNode) {
-                // Don't do anything, i.e. don't print the current text node
+        }
+
+        @Override
+        protected void writeNodeText(Node node) throws IOException
+        {
+            if (this.useFormat &amp;&amp; node.getText().trim().length() == 0) {
+                // Check if parent node contains non text nodes
+                boolean containsNonTextNode = false;
+                for (Object object : node.getParent().content()) {
+                    Node objectNode = (Node) object;
+                    if (objectNode.getNodeType() != Node.TEXT_NODE) {
+                        containsNonTextNode = true;
+                        break;
+                    }
+                }
+                if (containsNonTextNode) {
+                    // Don't do anything, i.e. don't print the current text node
+                } else {
+                    super.writeNodeText(node);
+                }
             } else {
                 super.writeNodeText(node);
             }
-        } else {
-            super.writeNodeText(node);
         }
-    }
 
-    @Override
-    protected void writePrintln() throws IOException
-    {
-        // We need to reimplement this method because of a bug (bad logic) in the original writePrintln() which checks
-        // the last output char to decide whether to print a NL or not:
-        //  ...3&lt;/a&gt;&lt;/b&gt; --&gt; ...3&lt;/a&gt;\n&lt;/b&gt;
-        // but
-        //  ...3\n&lt;/a&gt;&lt;/b&gt; --&gt; ...3\n&lt;/a&gt;&lt;/b&gt;
-        // and
-        //  ...3\n&lt;/a&gt;\n&lt;/b&gt; --&gt; ...3\n&lt;/a&gt;&lt;/b&gt;
-        if (this.useFormat) {
-           println(); 
-           // writer.write(getOutputFormat().getLineSeparator());
+        @Override
+        protected void writePrintln() throws IOException
+        {
+            // We need to reimplement this method because of a bug (bad logic) in the original writePrintln() which checks
+            // the last output char to decide whether to print a NL or not:
+            //  ...3&lt;/a&gt;&lt;/b&gt; --&gt; ...3&lt;/a&gt;\n&lt;/b&gt;
+            // but
+            //  ...3\n&lt;/a&gt;&lt;/b&gt; --&gt; ...3\n&lt;/a&gt;&lt;/b&gt;
+            // and
+            //  ...3\n&lt;/a&gt;\n&lt;/b&gt; --&gt; ...3\n&lt;/a&gt;&lt;/b&gt;
+            if (this.useFormat) {
+                println();
+                // writer.write(getOutputFormat().getLineSeparator());
+            }
         }
     }
-}
-   // formats the XWiki XML including indentation
-   def String format(String data, String defaultLanguage) throws Exception
+    // formats the XWiki XML including indentation
+    def String format(String data, String defaultLanguage) throws Exception
     {
         def sr = new StringReader(data);
         SAXReader reader = new SAXReader();
@@ -991,18 +991,18 @@ public class XWikiXMLWriter extends XMLWriter
 
         Node rnode = domdoc.getRootElement();
         if (rnode !=null) {
-          Node node = rnode.element("author");
-          if (node != null) {
-            node.setText(DEFAULTAUTHOR);
-          }
-          node = rnode.element("contentAuthor");
-          if (node != null) {
-            node.setText(DEFAULTAUTHOR);
-          }
-          node = rnode.element("creator");
-          if (node != null) {
-            node.setText(DEFAULTAUTHOR);
-          }
+            Node node = rnode.element("author");
+            if (node != null) {
+                node.setText(DEFAULTAUTHOR);
+            }
+            node = rnode.element("contentAuthor");
+            if (node != null) {
+                node.setText(DEFAULTAUTHOR);
+            }
+            node = rnode.element("creator");
+            if (node != null) {
+                node.setText(DEFAULTAUTHOR);
+            }
         }
 
         def baos = new ByteArrayOutputStream()
@@ -1018,9 +1018,9 @@ public class XWikiXMLWriter extends XMLWriter
         def xmlHeader = """&lt;?xml version="${this.xmlVersion}" encoding="UTF-8"?&gt;"""
         def licenceContent = xwiki.getDocument("GitLab.Code.LicenceFile").getContent()
         if (licenceContent!="")
-          result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader + "\n\n" + licenceContent)
+            result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader + "\n\n" + licenceContent)
         else
-          result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader )
+            result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader )
         return result.replaceAll("\r","");
     }
 }</content>
