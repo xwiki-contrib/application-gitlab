@@ -39,7 +39,13 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>false</hidden>
-  <content>{{velocity}}
+  <content>{{velocity output="false"}}
+#if($request.action=="compare")
+  #template('diff_macros.vm')
+#end
+{{/velocity}}
+
+{{velocity}}
 #if ("$!request.action" == "compare")
 = $services.localization.render('gitlab.configsheet.compare.title'): $request.page =
 #else
@@ -49,8 +55,6 @@
 #if(!$xwiki.hasProgrammingRights())
   #warning("This application cannot work without programming rights on the current page. Resave this page as an admin and retry.")
 #else
-
-
 #set($configLoaded = "")
 #if(!$request.action)
   #set($class = $doc.getObject('GitLab.Code.GitLabConfigClass').xWikiClass)
@@ -117,27 +121,94 @@
     {{/html}}
   ## LIST ACTION
   #elseif($request.action=="list")
+    #macro(displayEntry $status)
+          &lt;tr&gt;
+            &lt;td width="20px" align="center" style="line-height: 1;border: none;"&gt;
+              &lt;input type="checkbox" name="page" value="${status.fullname}.$!{status.language}" /&gt;
+            &lt;/td&gt;
+            &lt;td width="20px" align="center" style="line-height: 1;border: none;"&gt;
+              &lt;span class="label label-default"&gt;$status.status&lt;/span&gt;
+            &lt;/td&gt;
+            &lt;td valign="middle" style="line-height: 1;border: none;"&gt;
+              &lt;a href="$xwiki.getURL($status.fullname, 'view', "language=${status.language}")" target="_blank"&gt;${page}&lt;/a&gt;
+            &lt;/td&gt;
+          #if($status.status!="N")
+            &lt;td width="125px" align="center" style="line-height: 1;border: none;"&gt;
+              &lt;div class="btn-group" style="margin-top:0px; margin-bottom:0px"&gt;
+                &lt;a class="btn btn-xs btn-default" title="$services.localization.render('gitlab.configsheet.viewdiff')" href="$xwiki.getURL($doc,'view',"action=compare&amp;page=${status.fullname}&amp;gitlablanguage=${status.language}&amp;spaces=$!{spaces}&amp;filePath=${status.filePath}")" role="button" rel="nofollow" target="_blank"&gt;
+                  &lt;span class="fa fa-not-equal"&gt;&lt;/span&gt;
+                  &lt;span class="btn-label"&gt;$services.localization.render('gitlab.configsheet.viewdiff')&lt;/span&gt;
+                &lt;/a&gt;
+                &lt;button type="button" class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"&gt;
+                  &lt;span class="caret"&gt;&lt;/span&gt;
+                  &lt;span class="sr-only"&gt;Toggle dropdown&lt;/span&gt;
+                &lt;/button&gt;
+                &lt;ul class="dropdown-menu dropdown-menu-right"&gt;
+                  &lt;li&gt;
+                    &lt;a title="$services.localization.render('gitlab.configsheet.viewdiffunformatted')" href="$xwiki.getURL($doc,'view',"action=compare&amp;page=${status.fullname}&amp;gitlablanguage=${status.language}&amp;spaces=$!{spaces}&amp;filePath=${status.filePath}&amp;unformatted=1")" rel="nofollow" target="_blank"&gt;
+                      &lt;span class="fa fa-not-equal"&gt;&lt;/span&gt; $services.localization.render('gitlab.configsheet.viewdiffunformatted')
+                    &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ul&gt;
+              &lt;/div&gt;
+            &lt;/td&gt;
+          #else
+            &lt;td&gt;&lt;/td&gt;
+          #end
+    #end
+    #macro(listActions)
+            &lt;input class="btn btn-primary" type="submit" name="commit" value="$services.localization.render('gitlab.configsheet.commitall')" /&gt; &lt;input class="btn btn-warning" type="submit" name="update" value="$services.localization.render('gitlab.configsheet.updateall')" /&gt; &lt;input class="btn btn-default" type="submit" name="export" value="$services.localization.render('gitlab.configsheet.exportall')" /&gt;
+    #end
+
     {{html wiki=true clean=false}}
       &lt;form action="$doc.documentReference.name"  method="post"&gt;
         &lt;input type="hidden" name="action" value="commit" /&gt;
         &lt;input type="hidden" name="spaces" value="$!{spaces}" /&gt;
-        &lt;ul&gt;
+        #listActions()
+        &lt;table cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 0px; margin-top: 20px;"&gt;
+          &lt;tr&gt;
+            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th style="font-family: sans-serif;"&gt;&lt;strong&gt;Updated documents&lt;/strong&gt;&lt;/th&gt;
+            &lt;th width="125px"&gt;&lt;/th&gt;
+          &lt;/tr&gt;
         #set($cmap = $!gitlabgroovy.getChangedPages($spaces, $savedlist))
         #foreach($page in $cmap.keySet())
           #set($status = $cmap.get($page))
-          ## encode the language of the document after the document name, after a dot. Will be processed on commit
-          &lt;li&gt;$status.status &lt;input type="checkbox" name="page" value="${status.fullname}.$!{status.language}" /&gt; ${page}
-          &lt;input type="hidden" name="${status.fullname}.$!{status.language}_sha" value="${status.gitlabsha}" /&gt;
-          #if($status.status!="N")
-            [[$services.localization.render('gitlab.configsheet.viewdiff')&gt;&gt;${doc.fullName}?action=compare&amp;page=${status.fullname}&amp;gitlablanguage=${status.language}&amp;spaces=$!{spaces}&amp;filePath=${status.filePath}||target=_blank]]
-            -
-            [[$services.localization.render('gitlab.configsheet.viewdiffunformatted')&gt;&gt;${doc.fullName}?action=compare&amp;page=${status.fullname}&amp;gitlablanguage=${status.language}&amp;spaces=$!{spaces}&amp;filePath=${status.filePath}&amp;unformatted=1||target=_blank]]
-            -
-            [[$services.localization.render('gitlab.configsheet.viewdoc')&gt;&gt;${status.fullname}?language=${status.language}||target=_blank]]
+          #if($status.status!='N' &amp;&amp; $status.status!='A' &amp;&amp; $status.status!='F')
+            #displayEntry($status)
           #end
         #end
-        &lt;/ul&gt;
-        &lt;input type="submit" name="commit" value="$services.localization.render('gitlab.configsheet.commitall')" /&gt; &lt;input type="submit" name="update" value="$services.localization.render('gitlab.configsheet.updateall')" /&gt; &lt;input type="submit" name="export" value="$services.localization.render('gitlab.configsheet.exportall')" /&gt;
+        &lt;/table&gt;
+        &lt;table cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 0px"&gt;
+          &lt;tr&gt;
+            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th style="font-family: sans-serif;"&gt;&lt;strong&gt;New documents&lt;/strong&gt;&lt;/th&gt;
+            &lt;th width="125px"&gt;&lt;/th&gt;
+          &lt;/tr&gt;
+        #foreach($page in $cmap.keySet())
+          #set($status = $cmap.get($page))
+          #if($status.status=='N' || $status.status=='A')
+            #displayEntry($status)
+          #end
+        #end
+        &lt;/table&gt;
+        &lt;table cellpadding="0" cellspacing="0" border="0"&gt;
+          &lt;tr&gt;
+            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th style="font-family: sans-serif;"&gt;&lt;strong&gt;Minor format changes&lt;/strong&gt;&lt;/th&gt;
+            &lt;th width="125px"&gt;&lt;/th&gt;
+          &lt;/tr&gt;
+        #foreach($page in $cmap.keySet())
+          #set($status = $cmap.get($page))
+          #if($status.status=='F')
+            #displayEntry($status)
+          #end
+        #end
+        &lt;/table&gt;
+        #listActions()
       &lt;/form&gt;
     {{/html}}
   #elseif($request.export)
@@ -211,6 +282,20 @@
     $gitlabgroovy.getCommitStatus("|", "|", false)
 
   ## VIEW STATUS ACTION
+  #elseif($request.action=="compare")
+    #set($pagedoc = $xwiki.getDocument($request.page))
+    #if($request.gitlablanguage)
+      #set($pagedoc = $pagedoc.getTranslatedDocument($request.gitlablanguage))
+    #end
+    #if("1"=="$!{request.unformatted}")
+      #set ($xmls = $gitlabgroovy.getXMLForDiff($pagedoc, $request.filePath, false))
+    #else
+      #set ($xmls = $gitlabgroovy.getXMLForDiff($pagedoc, $request.filePath, true))
+    #end
+
+    {{html clean="false"}}
+      #unifiedDiff($xmls[0] $xmls[1])
+    {{/html}}
   #elseif($request.action=="compare")
     {{html clean=false}}
       &lt;style type="text/css"&gt;

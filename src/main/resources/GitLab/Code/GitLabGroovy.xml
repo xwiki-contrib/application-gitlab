@@ -873,6 +873,31 @@ public class GitLabGroovy {
         return entries;
     }
 
+    public getXMLForDiff(pagedoc, filePath, withFormat) {
+        def file2 = gitlabapi.getRepositoryFile(gitlabproject, filePath, "master")
+        def gitlabxml = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8");
+        if (withFormat)
+            gitlabxml = cleanXML(gitlabxml, true);
+        logger.debug("Gitlab hash " + gitlabxml.hashCode())
+        def xml = getXML(pagedoc, true);
+        logger.debug("XWiki hash " + xml.hashCode())
+
+        if (pagedoc.isNew() &amp;&amp; gitlabxml == null)
+            return "Document does not exist";
+
+        if (pagedoc.isNew())
+            return "Document does not exist in the wiki"
+
+        if (gitlabxml==null)
+            return "Document does not exist in GitLab"
+
+        // remove attachment content from xml
+        gitlabxml = gitlabxml.replaceAll("(?s)&lt;attachment&gt;(.*?)&lt;content&gt;(.*?)&lt;/content&gt;(.*?)&lt;/attachment&gt;", "&lt;attachment&gt;\$1&lt;content&gt;&lt;/content&gt;\$3&lt;/attachment&gt;")
+        xml = xml.replaceAll("(?s)&lt;attachment&gt;(.*?)&lt;content&gt;(.*?)&lt;/content&gt;(.*?)&lt;/attachment&gt;",
+                "&lt;attachment&gt;\$1&lt;content&gt;&lt;/content&gt;\$3&lt;/attachment&gt;")
+        return [gitlabxml, xml];
+    }
+
     public showXMLDiff(pagedoc, filePath, withFormat) {
         def file2 = gitlabapi.getRepositoryFile(gitlabproject, filePath, "master")
         def gitlabxml = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8");
