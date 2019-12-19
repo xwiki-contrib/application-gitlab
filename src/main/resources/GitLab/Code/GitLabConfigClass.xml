@@ -52,7 +52,6 @@
     <contribVersion>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>contribVersion</name>
       <number>3</number>
       <picker>0</picker>
@@ -68,7 +67,6 @@
       <dateFormat>dd/MM/yyyy</dateFormat>
       <disabled>0</disabled>
       <emptyIsToday>0</emptyIsToday>
-      <hint/>
       <name>defaultdate</name>
       <number>11</number>
       <picker>1</picker>
@@ -82,7 +80,6 @@
     <defaultspace>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>defaultspace</name>
       <number>10</number>
       <picker>0</picker>
@@ -96,7 +93,6 @@
     <defaultuser>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>defaultuser</name>
       <number>12</number>
       <picker>0</picker>
@@ -112,7 +108,6 @@
       <customDisplay/>
       <disabled>0</disabled>
       <editor>Text</editor>
-      <hint/>
       <name>description</name>
       <number>5</number>
       <picker>0</picker>
@@ -127,7 +122,6 @@
     <gitlab_url>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>gitlab_url</name>
       <number>6</number>
       <picker>0</picker>
@@ -141,7 +135,6 @@
     <name>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>name</name>
       <number>1</number>
       <picker>0</picker>
@@ -155,7 +148,6 @@
     <repository_name>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>repository_name</name>
       <number>8</number>
       <picker>0</picker>
@@ -169,7 +161,6 @@
     <repository_path>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>repository_path</name>
       <number>9</number>
       <picker>0</picker>
@@ -183,7 +174,6 @@
     <repository_user>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>repository_user</name>
       <number>7</number>
       <picker>0</picker>
@@ -199,7 +189,6 @@
       <customDisplay/>
       <disabled>0</disabled>
       <editor>Text</editor>
-      <hint/>
       <name>status</name>
       <number>13</number>
       <picker>0</picker>
@@ -214,7 +203,6 @@
     <version>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>version</name>
       <number>2</number>
       <picker>0</picker>
@@ -228,7 +216,6 @@
     <xarXmlVersion>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>xarXmlVersion</name>
       <number>4</number>
       <picker>0</picker>
@@ -260,7 +247,6 @@
         <customDisplay/>
         <disabled>0</disabled>
         <displayType>input</displayType>
-        <hint/>
         <idField/>
         <multiSelect>0</multiSelect>
         <name>sheet</name>
@@ -304,7 +290,6 @@
         <customDisplay/>
         <disabled>0</disabled>
         <displayType>input</displayType>
-        <hint/>
         <idField/>
         <multiSelect>0</multiSelect>
         <name>sheet</name>

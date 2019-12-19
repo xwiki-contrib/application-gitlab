@@ -58,7 +58,6 @@
     <contextuser>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>contextuser</name>
       <number>3</number>
       <picker>0</picker>
@@ -73,7 +72,6 @@
       <algorithm/>
       <customDisplay/>
       <disabled>0</disabled>
-      <hint/>
       <name>token</name>
       <number>2</number>
       <picker>0</picker>
@@ -106,7 +104,6 @@
         <customDisplay/>
         <disabled>0</disabled>
         <displayType>input</displayType>
-        <hint/>
         <idField/>
         <multiSelect>0</multiSelect>
         <name>sheet</name>
