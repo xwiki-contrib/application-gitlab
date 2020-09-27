@@ -40,12 +40,21 @@
 #if($request.action=="compare")
   #template('diff_macros.vm')
 #end
+
+#macro(displayProperty $object $propertyName)
+  #set($tooltip = $object.xWikiClass.get($propertyName).propertyClass.getTooltip($xcontext.context))
+  &lt;dt&gt;
+    &lt;label#if ($xcontext.action == 'edit') for="${object.xWikiClass.name}_${object.number}_${propertyName}"#end&gt;$escapetool.xml($doc.displayPrettyName($propertyName, false, false))&lt;/label&gt;
+  #if ("$!tooltip" != '')&lt;span class="xHint"&gt;$escapetool.xml($tooltip)&lt;/span&gt;#end
+  &lt;/dt&gt;
+  &lt;dd&gt;{{/html}}${doc.display($propertyName)}{{html clean="false"}}&lt;/dd&gt;
+#end
 {{/velocity}}
 
 {{velocity}}
 #if ("$!request.action" == "compare")
 = $services.localization.render('gitlab.configsheet.compare.title'): $request.page =
-#else
+#elseif($request.action)
 = $services.localization.render('gitlab.configsheet.title'): $doc.documentReference.name =
 #end
 
@@ -54,34 +63,74 @@
 #else
 #set($configLoaded = "")
 #if(!$request.action)
-  #set($class = $doc.getObject('GitLab.Code.GitLabConfigClass').xWikiClass)
-  #set($authobj = $doc.getObject("GitLab.Code.GitLabAuthClass", "contextuser", $xcontext.user))
-  #if(!$authobj)
-    #set($authobj = $doc.newObject("GitLab.Code.GitLabAuthClass"))
-    #if($xcontext.action=="edit")
-      #set($ok = $doc.use($authobj))
-      #set($ok = $doc.set("contextuser", $xcontext.user))
-      #set($ok = $doc.use("GitLab.Code.GitLabConfigClass"))
-      #set($ok = $doc.save())
+  #set($configObj = $doc.getObject('GitLab.Code.GitLabConfigClass'))
+  #set($authObj = $doc.getObject("GitLab.Code.GitLabAuthClass", "contextuser", $xcontext.user))
+  #if(!$authObj)
+    #set($authObj = $doc.newObject("GitLab.Code.GitLabAuthClass"))
+    #if($xcontext.action == 'edit')
+      #set($discard = $doc.use($authObj))
+      #set($discard = $doc.set('contextuser', $xcontext.user))
+      #set($discard = $doc.use("GitLab.Code.GitLabConfigClass"))
+      #set($discard = $doc.save())
     #end
   #end
-  {{html clean="false" wiki="true"}}
+  {{html clean="false"}}
     &lt;div class="xform"&gt;
-    #foreach($prop in $class.properties)
-      #set($tooltip = $prop.propertyClass.getTooltip($xcontext.context))
-      ; &lt;label#if ($xcontext.action == 'edit') for="GitLab.Code.GitLabClass_0_${prop.name}"#end&gt;$escapetool.xml($doc.displayPrettyName($prop.name, false, false))&lt;/label&gt;##
-      #if ("$!tooltip" != '')(% class="xHint" %)$escapetool.xml($tooltip)#end
-
-      : $doc.display($prop.name)
-      #if($prop.name=="gitlab_url" &amp;&amp; $xcontext.action=="edit")
-        #set($ok = $doc.use($authobj))
-        ; &lt;label#if ($xcontext.action == 'edit') for="GitLab.Code.GitAuthClass_${authobj.number}_${prop.name}"#end&gt;$escapetool.xml($doc.displayPrettyName("token", false, false))&lt;/label&gt;
-        : $doc.display("token")
-        #set($ok = $doc.set("contextuser", $xcontext.user))
-        $doc.display("contextuser", "hidden")
-        #set($ok = $doc.use("GitLab.Code.GitLabConfigClass"))
-      #end
-    #end
+      &lt;h3&gt;$escapetool.xml($services.localization.render('gitlab.configsheet.header.projectConfig'))&lt;/h3&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-md-8"&gt;
+          &lt;dl&gt;
+            #displayProperty($configObj, 'name')
+            #displayProperty($configObj, 'description')
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-md-4"&gt;
+          &lt;dl&gt;
+            #displayProperty($configObj, 'version')
+            #displayProperty($configObj, 'contribVersion')
+            #displayProperty($configObj, 'xarXmlVersion')
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;h3&gt;$escapetool.xml($services.localization.render('gitlab.configsheet.header.repositoryConfig'))&lt;/h3&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-md-8"&gt;
+          &lt;dl&gt;
+            #displayProperty($configObj, 'repository_user')
+            #displayProperty($configObj, 'repository_name')
+            #displayProperty($configObj, 'repository_path')
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-md-4"&gt;
+          &lt;dl&gt;
+            #displayProperty($configObj, 'gitlab_url')
+            #if ($xcontext.action == 'edit')
+              #displayProperty($authObj, 'token')
+              ##set($discard = $doc.use($authObj))
+              ##set($discard = $doc.set('contextuser', $xcontext.user))
+              {{/html}}
+              $authObj.display('contextuser', 'hidden')
+              {{html clean="false"}}
+            #end
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
+      &lt;h3&gt;$escapetool.xml($services.localization.render('gitlab.configsheet.header.commitConfig'))&lt;/h3&gt;
+      &lt;div class="row"&gt;
+        &lt;div class="col-md-8"&gt;
+          &lt;dl&gt;
+            #displayProperty($configObj, 'defaultspace')
+            #displayProperty($configObj, 'defaultuser')
+            #displayProperty($configObj, 'license')
+          &lt;/dl&gt;
+        &lt;/div&gt;
+        &lt;div class="col-md-4"&gt;
+          &lt;dl&gt;
+            #displayProperty($configObj, 'removeDates')
+            #displayProperty($configObj, 'defaultdate')
+          &lt;/dl&gt;
+        &lt;/div&gt;
+      &lt;/div&gt;
     &lt;/div&gt;
   {{/html}}
 #else

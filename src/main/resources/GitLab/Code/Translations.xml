@@ -42,6 +42,11 @@ gitlab.currentconfigs.title=Current GitLab configs
 gitlab.currentconfigs.noconfigs=There are currently no configs created
 gitlab.createnewconfig=Create new GitLab config
 gitlab.createnewimport.error.titlemissing=A title is needed when creating an GitLab config
+
+gitlab.configsheet.header.projectConfig=Project configuration
+gitlab.configsheet.header.repositoryConfig=Repository configuration
+gitlab.configsheet.header.commitConfig=Commit configuration
+
 gitlab.configsheet.title=GitLab Repository Configuration
 gitlab.configsheet.compare.title=Differences for
 gitlab.configsheet.debug=Debug
@@ -84,6 +89,8 @@ GitLab.Code.GitLabConfigClass_savedlist=Saved list
 GitLab.Code.GitLabConfigClass_savedlist_tooltip=saved list to check pages - from MultiPageExport - to commit in
 GitLab.Code.GitLabConfigClass_defaultdate=Default date
 GitLab.Code.GitLabConfigClass_defaultdate_tooltip=Date to set all pages we commit to
+GitLab.Code.GitLabConfigClass_removeDates=Remove dates
+GitLab.Code.GitLabConfigClass_removeDates_tooltip=If set to true, the dates of the documents and their attachments will be removed before commit.
 GitLab.Code.GitLabConfigClass_defaultuser=Default user
 GitLab.Code.GitLabConfigClass_defaultuser_tooltip=User to set all pages we commit to
 GitLab.Code.GitLabConfigClass_license=License

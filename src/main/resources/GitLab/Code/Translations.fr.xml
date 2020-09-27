@@ -36,12 +36,17 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>false</hidden>
-  <content>gitlab.title=Application GitLab 
+  <content>gitlab.title=Application GitLab
 gitlab.description=Bienvenue sur l'application gitlab. Vous pouvez configurer votre module GitLab pour connecter votre wiki et commiter votre code XWiki.
 gitlab.currentconfigs.title=Configurations GitLab disponibles
 gitlab.currentconfigs.noconfigs=Il n'y a pas de configuration GitLab
 gitlab.createnewconfig=Créer une nouvelle configuration GitLab
 gitlab.createnewimport.error.titlemissing=La configuration GitLab a besoin d'un titre
+
+gitlab.configsheet.header.projectConfig=Configuration du projet
+gitlab.configsheet.header.repositoryConfig=Configuration du dépôt GitLab
+gitlab.configsheet.header.commitConfig=Configuration des règles de commit
+
 gitlab.configsheet.title=Configuration GitLab
 gitlab.configsheet.compare.title=Différences pour
 gitlab.configsheet.debug=Debug
@@ -84,6 +89,8 @@ GitLab.Code.GitLabConfigClass_savedlist=Liste sauvegardée
 GitLab.Code.GitLabConfigClass_savedlist_tooltip=Liste de page sauvegardée listant les pages à commiter
 GitLab.Code.GitLabConfigClass_defaultdate=Date par défaut
 GitLab.Code.GitLabConfigClass_defaultdate_tooltip=Date à utiliser pour toutes les pages commitées
+GitLab.Code.GitLabConfigClass_removeDates=Supprimer les dates
+GitLab.Code.GitLabConfigClass_removeDates_tooltip=Si oui, les dates des documents et de leurs fichiers joints seront supprimées avant commit.
 GitLab.Code.GitLabConfigClass_defaultuser=Utilisateur par défaut
 GitLab.Code.GitLabConfigClass_defaultuser_tooltip=Utilisateur à utiliser pour toutes les pages commités
 GitLab.Code.GitLabConfigClass_license=Licence
