@@ -716,8 +716,22 @@ public class GitLabGroovy {
                     newdoc.setContentDirty(true);
                 }
 
+                // Go through each object change between the previous and the new document in order to identify
+                // objects that have been removed. We will need to explicitely mark them to be removed when
+                // saving newdoc
+                newdoc.getObjectDiff(pagedoc.getDocument(), newdoc, context.getContext()).each{ diff -&gt;
+                  diff.each{ diffElement -&gt;
+                    if (diffElement.getAction().equals("object-removed")) {
+                      def removedObject = pagedoc.getObject(diffElement.getClassName(), diffElement.getNumber());
+                      if (removedObject != null) {
+                        newdoc.addXObjectToRemove(removedObject.getXWikiObject());
+                      }
+                    }
+                  }
+                }
+
                 // saving document
-                xwiki.getXWiki().saveDocument(newdoc, "Updated from GITHUB", context.getContext());
+                xwiki.getXWiki().saveDocument(newdoc, "Updated from GitLab", context.getContext());
 
                 // saving attachments
                 newdoc.saveAllAttachments(false, true, context.getContext());
