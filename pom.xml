@@ -29,7 +29,7 @@
   </parent>
   <groupId>org.xwiki.contrib.gitlab</groupId>
   <artifactId>application-gitlab</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7-SNAPSHOT</version>
   <packaging>xar</packaging>
   <name>GitLab Application</name>
   <description>Allows committing XWiki pages to a GitLab repository</description>
@@ -73,6 +73,6 @@
     <connection>scm:git:git@github.com:xwiki-contrib/application-gitlab.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/application-gitlab.git</developerConnection>
     <url>https://github.com/xwiki-contrib/application-gitlab</url>
-    <tag>application-gitlab-1.0.6</tag>
+    <tag>HEAD</tag>
   </scm>
 </project>
