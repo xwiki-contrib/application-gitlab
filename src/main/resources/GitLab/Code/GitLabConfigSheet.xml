@@ -66,9 +66,12 @@
     #end
   #end
   {{html clean="false" wiki="true"}}
+    &lt;div class="xform"&gt;
     #foreach($prop in $class.properties)
       #set($tooltip = $prop.propertyClass.getTooltip($xcontext.context))
-      ; &lt;label#if ($xcontext.action == 'edit') for="GitLab.Code.GitLabClass_0_${prop.name}"#end&gt;$escapetool.xml($doc.displayPrettyName($prop.name, false, false))&lt;/label&gt;
+      ; &lt;label#if ($xcontext.action == 'edit') for="GitLab.Code.GitLabClass_0_${prop.name}"#end&gt;$escapetool.xml($doc.displayPrettyName($prop.name, false, false))&lt;/label&gt;##
+      #if ("$!tooltip" != '')(% class="xHint" %)$escapetool.xml($tooltip)#end
+
       : $doc.display($prop.name)
       #if($prop.name=="gitlab_url" &amp;&amp; $xcontext.action=="edit")
         #set($ok = $doc.use($authobj))
@@ -79,6 +82,7 @@
         #set($ok = $doc.use("GitLab.Code.GitLabConfigClass"))
       #end
     #end
+    &lt;/div&gt;
   {{/html}}
 #else
   #set($gitlabgroovy = $xwiki.parseGroovyFromPage("GitLab.Code.GitLabGroovy","GitLab.Code.GitLabGroovy"))
