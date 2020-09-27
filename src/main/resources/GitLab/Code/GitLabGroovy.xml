@@ -92,6 +92,7 @@ public class GitLabGroovy {
     def token = "";
     def defaultDate = "";
     Boolean removeDates;
+    String license;
     def defaultUser = "";
     def status = new HashMap();
     def DEFAULTAUTHOR = "xwiki:XWiki.Admin";
@@ -122,6 +123,7 @@ public class GitLabGroovy {
         this.savedlist = configdoc.getValue("savedlist");
         this.defaultDate = configdoc.getValue("defaultdate");
         this.removeDates = configdoc.getValue("removeDates");
+        this.license = configdoc.getValue("license");
         this.defaultUser = configdoc.getValue("defaultuser");
         this.status = getStatus(configdoc.getValue("status"));
 
@@ -1054,13 +1056,16 @@ public class GitLabGroovy {
         w.write(domdoc);
         w.close();
         def result = baos.toString();
-        // Adding licence header
+
+        // Adding license header
         def xmlHeader = """&lt;?xml version="${this.xmlVersion}" encoding="UTF-8"?&gt;"""
-        def licenceContent = xwiki.getDocument("GitLab.Code.LicenceFile").getContent()
-        if (licenceContent!="")
-            result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader + "\n\n" + licenceContent)
-        else
-            result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader )
+        if (this.license != null &amp;&amp; !this.license.isBlank() &amp;&amp; xwiki.exists(this.license)) {
+            String licenseContent = xwiki.getDocument(this.license).getContent();
+            result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader + "\n\n" + licenseContent);
+        } else {
+            result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader);
+        }
+
         return result.replaceAll("\r","");
     }
 

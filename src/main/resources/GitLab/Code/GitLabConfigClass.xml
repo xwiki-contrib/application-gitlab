@@ -135,6 +135,33 @@
       <validationRegExp/>
       <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
     </gitlab_url>
+    <license>
+      <cache>0</cache>
+      <classname/>
+      <customDisplay/>
+      <defaultValue/>
+      <disabled>0</disabled>
+      <displayType>input</displayType>
+      <freeText/>
+      <hint/>
+      <idField/>
+      <multiSelect>0</multiSelect>
+      <name>license</name>
+      <number>14</number>
+      <picker>1</picker>
+      <prettyName>License document</prettyName>
+      <relationalStorage>0</relationalStorage>
+      <separator> </separator>
+      <separators/>
+      <size>1</size>
+      <sort/>
+      <sql/>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <valueField/>
+      <classType>com.xpn.xwiki.objects.classes.PageClass</classType>
+    </license>
     <name>
       <customDisplay/>
       <disabled>0</disabled>
@@ -213,7 +240,7 @@
       <editor>Text</editor>
       <hint/>
       <name>status</name>
-      <number>14</number>
+      <number>15</number>
       <picker>0</picker>
       <prettyName>Status</prettyName>
       <rows>5</rows>

@@ -64,6 +64,7 @@ gitlab.configsheet.custom.spacelist=Liste des espaces (separés par des virgules
 gitlab.configsheet.custom.space=Espace
 gitlab.configsheet.customlist=Liste custom des pages
 gitlab.configsheet.pagesupdated=Les pages suivantes ont été mises à jour à partir de GitLab
+
 GitLab.Code.GitLabConfigClass_name=Nom du projet
 GitLab.Code.GitLabConfigClass_description=Description du projet
 GitLab.Code.GitLabConfigClass_version=Version du projet
@@ -85,7 +86,10 @@ GitLab.Code.GitLabConfigClass_defaultdate=Date par défaut
 GitLab.Code.GitLabConfigClass_defaultdate_tooltip=Date à utiliser pour toutes les pages commitées
 GitLab.Code.GitLabConfigClass_defaultuser=Utilisateur par défaut
 GitLab.Code.GitLabConfigClass_defaultuser_tooltip=Utilisateur à utiliser pour toutes les pages commités
+GitLab.Code.GitLabConfigClass_license=Licence
+GitLab.Code.GitLabConfigClass_license_tooltip=Document contenant la licence à ajouter dans l'en-tête des pages commitées. Si ce champ est laissé vide, aucune licence ne sera ajoutée.
 GitLab.Code.GitLabConfigClass_status=Etat du commit
+
 GitLab.Code.GitLabAuthClass_username=Utilisateur GitLab
 GitLab.Code.GitLabAuthClass_password=Mot de passe GitLab</content>
 </xwikidoc>
