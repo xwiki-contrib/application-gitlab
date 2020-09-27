@@ -122,6 +122,7 @@
             #displayProperty($configObj, 'defaultspace')
             #displayProperty($configObj, 'defaultuser')
             #displayProperty($configObj, 'license')
+            #displayProperty($configObj, 'parentDefinitionStrategy')
           &lt;/dl&gt;
         &lt;/div&gt;
         &lt;div class="col-md-4"&gt;

@@ -181,6 +181,30 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </name>
+      <parentDefinitionStrategy>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue/>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <multiSelect>0</multiSelect>
+        <name>parentDefinitionStrategy</name>
+        <number>15</number>
+        <picker>1</picker>
+        <prettyName>Parent definition strategy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>setDefault|keepAsIs|remove</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </parentDefinitionStrategy>
       <removeDates>
         <customDisplay/>
         <defaultValue/>
@@ -245,7 +269,7 @@
         <editor>Text</editor>
         <hint/>
         <name>status</name>
-        <number>15</number>
+        <number>16</number>
         <picker>0</picker>
         <prettyName>Status</prettyName>
         <rows>5</rows>
@@ -307,6 +331,9 @@
     </property>
     <property>
       <name/>
+    </property>
+    <property>
+      <parentDefinitionStrategy>keepAsIs</parentDefinitionStrategy>
     </property>
     <property>
       <removeDates/>

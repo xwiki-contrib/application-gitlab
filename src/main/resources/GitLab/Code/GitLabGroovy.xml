@@ -93,6 +93,7 @@ public class GitLabGroovy {
     def defaultDate = "";
     Boolean removeDates;
     String license;
+    String parentDefinitionStrategy;
     def defaultUser = "";
     def status = new HashMap();
     def DEFAULTAUTHOR = "xwiki:XWiki.Admin";
@@ -124,6 +125,7 @@ public class GitLabGroovy {
         this.defaultDate = configdoc.getValue("defaultdate");
         this.removeDates = configdoc.getValue("removeDates");
         this.license = configdoc.getValue("license");
+        this.parentDefinitionStrategy = (configdoc.getValue("parentDefinitionStrategy") != null) ? configdoc.getValue("parentDefinitionStrategy") : "";
         this.defaultUser = configdoc.getValue("defaultuser");
         this.status = getStatus(configdoc.getValue("status"));
 
@@ -244,7 +246,8 @@ public class GitLabGroovy {
 
     public getXML(pagedoc, boolean withFormat) {
         def clonedDoc = pagedoc.document.clone();
-        if (clonedDoc.getParent()=="") {
+
+        if ((this.parentDefinitionStrategy.isBlank() || this.parentDefinitionStrategy.equals("setDefault")) &amp;&amp; clonedDoc.getParent().isBlank()) {
             clonedDoc.setParent(clonedDoc.getSpace() + ".WebHome");
         }
 
@@ -1045,6 +1048,10 @@ public class GitLabGroovy {
             removeNodes("xwikidoc/date", domdoc);
             removeNodes("xwikidoc/contentUpdateDate", domdoc);
             removeNodes("xwikidoc//attachment/date", domdoc);
+        }
+
+        if (this.parentDefinitionStrategy.equals("remove")) {
+            removeNodes("xwikidoc/parent", domdoc);
         }
 
         def baos = new ByteArrayOutputStream()
