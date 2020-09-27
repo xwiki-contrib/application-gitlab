@@ -27,12 +27,9 @@
   <defaultLanguage/>
   <translation>0</translation>
   <creator>xwiki:XWiki.Admin</creator>
-  <creationDate>1514761200000</creationDate>
   <parent>xwiki:GitLab.Code.WebHome</parent>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
-  <date>1514761200000</date>
-  <contentUpdateDate>1514761200000</contentUpdateDate>
   <version>1.1</version>
   <title>GitLabGroovy</title>
   <comment/>
@@ -94,6 +91,7 @@ public class GitLabGroovy {
     def email = "";
     def token = "";
     def defaultDate = "";
+    Boolean removeDates;
     def defaultUser = "";
     def status = new HashMap();
     def DEFAULTAUTHOR = "xwiki:XWiki.Admin";
@@ -123,6 +121,7 @@ public class GitLabGroovy {
         this.defaultspace = configdoc.getValue("defaultspace");
         this.savedlist = configdoc.getValue("savedlist");
         this.defaultDate = configdoc.getValue("defaultdate");
+        this.removeDates = configdoc.getValue("removeDates");
         this.defaultUser = configdoc.getValue("defaultuser");
         this.status = getStatus(configdoc.getValue("status"));
 
@@ -1024,6 +1023,14 @@ public class GitLabGroovy {
             }
         }
 
+        if (this.removeDates) {
+            this.logger.debug("Removing dates from generated XML ...");
+            removeNodes("xwikidoc/creationDate", domdoc);
+            removeNodes("xwikidoc/date", domdoc);
+            removeNodes("xwikidoc/contentUpdateDate", domdoc);
+            removeNodes("xwikidoc//attachment/date", domdoc);
+        }
+
         def baos = new ByteArrayOutputStream()
         XMLWriter w;
         OutputFormat format = new OutputFormat("  ", true, "UTF-8");
@@ -1041,6 +1048,21 @@ public class GitLabGroovy {
         else
             result = result.replaceAll("(&lt;.xml .*&gt;)", xmlHeader )
         return result.replaceAll("\r","");
+    }
+
+    /**
+     * Remove the nodes found with the xpath expression.
+     * Copied from FormatMojo in xwiki-commons-tool-xar-plugin
+     *
+     * @param xpathExpression the xpath expression of the nodes
+     * @param domdoc The DOM document
+     */
+    private void removeNodes(String xpathExpression, Document domdoc)
+    {
+        List&lt;Node&gt; nodes = domdoc.selectNodes(xpathExpression);
+        for (Node node : nodes) {
+            node.detach();
+        }
     }
 }</content>
 </xwikidoc>
