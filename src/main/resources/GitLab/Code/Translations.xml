@@ -69,6 +69,9 @@ gitlab.configsheet.custom.spacelist=Space List (separated by commas)
 gitlab.configsheet.custom.space=Space
 gitlab.configsheet.customlist=Custom List of pages
 gitlab.configsheet.pagesupdated=The following pages have been updated from GitLab
+gitlab.configsheet.select=Select
+gitlab.configsheet.select.all=all
+gitlab.configsheet.select.none=none
 
 GitLab.Code.GitLabConfigClass_name=Project Name
 GitLab.Code.GitLabConfigClass_description=Project Description
@@ -122,6 +125,8 @@ GitLab.Code.GitLabAuthClass_password=GitLab Password</content>
         <cache>0</cache>
         <disabled>0</disabled>
         <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>scope</name>
         <number>1</number>

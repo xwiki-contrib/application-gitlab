@@ -210,6 +210,10 @@
     #macro(listActions)
             &lt;input class="btn btn-primary" type="submit" name="commit" value="$services.localization.render('gitlab.configsheet.commitall')" /&gt; &lt;input class="btn btn-warning" type="submit" name="update" value="$services.localization.render('gitlab.configsheet.updateall')" /&gt; &lt;input class="btn btn-default" type="submit" name="export" value="$services.localization.render('gitlab.configsheet.exportall')" /&gt;
     #end
+    #macro(showQuickSelect)
+      $xwiki.jsx.use('GitLab.Code.GitLabConfigSheet')
+      $services.localization.render('gitlab.configsheet.select') &lt;a href="#" class="selectAll"&gt;$services.localization.render('gitlab.configsheet.select.all')&lt;/a&gt; / &lt;a href="#" class="deselectAll"&gt;$services.localization.render('gitlab.configsheet.select.none')&lt;/a&gt;
+    #end
 
     {{html wiki=true clean=false}}
       &lt;form action="$doc.documentReference.name"  method="post"&gt;
@@ -218,10 +222,10 @@
         #listActions()
         &lt;table cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 0px; margin-top: 20px;"&gt;
           &lt;tr&gt;
-            &lt;th width="20px"&gt;&lt;/th&gt;
-            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th width="10%"&gt;#showQuickSelect()&lt;/th&gt;
+            &lt;th width="20%"&gt;&lt;/th&gt;
             &lt;th style="font-family: sans-serif;"&gt;&lt;strong&gt;Updated documents&lt;/strong&gt;&lt;/th&gt;
-            &lt;th width="125px"&gt;&lt;/th&gt;
+            &lt;th width="15%"&gt;&lt;/th&gt;
           &lt;/tr&gt;
         #set($cmap = $!gitlabgroovy.getChangedPages($spaces, $savedlist))
         #foreach($page in $cmap.keySet())
@@ -233,10 +237,10 @@
         &lt;/table&gt;
         &lt;table cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 0px"&gt;
           &lt;tr&gt;
-            &lt;th width="20px"&gt;&lt;/th&gt;
-            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th width="10%"&gt;#showQuickSelect()&lt;/th&gt;
+            &lt;th width="20%"&gt;&lt;/th&gt;
             &lt;th style="font-family: sans-serif;"&gt;&lt;strong&gt;New documents&lt;/strong&gt;&lt;/th&gt;
-            &lt;th width="125px"&gt;&lt;/th&gt;
+            &lt;th width="15%"&gt;&lt;/th&gt;
           &lt;/tr&gt;
         #foreach($page in $cmap.keySet())
           #set($status = $cmap.get($page))
@@ -247,10 +251,10 @@
         &lt;/table&gt;
         &lt;table cellpadding="0" cellspacing="0" border="0"&gt;
           &lt;tr&gt;
-            &lt;th width="20px"&gt;&lt;/th&gt;
-            &lt;th width="20px"&gt;&lt;/th&gt;
+            &lt;th width="10%"&gt;#showQuickSelect()&lt;/th&gt;
+            &lt;th width="20%"&gt;&lt;/th&gt;
             &lt;th style="font-family: sans-serif;"&gt;&lt;strong&gt;Minor format changes&lt;/strong&gt;&lt;/th&gt;
-            &lt;th width="125px"&gt;&lt;/th&gt;
+            &lt;th width="15%"&gt;&lt;/th&gt;
           &lt;/tr&gt;
         #foreach($page in $cmap.keySet())
           #set($status = $cmap.get($page))
@@ -377,4 +381,121 @@
 #end ## end set config failed
 #end ## Programming right check
 {{/velocity}}</content>
+  <object>
+    <name>GitLab.Code.GitLabConfigSheet</name>
+    <number>0</number>
+    <className>XWiki.JavaScriptExtension</className>
+    <guid>3a8e4cef-e9aa-4a49-acf2-f753593f6c20</guid>
+    <class>
+      <name>XWiki.JavaScriptExtension</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <cache>
+        <cache>0</cache>
+        <defaultValue>long</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>cache</name>
+        <number>5</number>
+        <prettyName>Caching policy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>long|short|default|forbid</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </cache>
+      <code>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>code</name>
+        <number>2</number>
+        <prettyName>Code</prettyName>
+        <rows>20</rows>
+        <size>50</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </code>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parse>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>parse</name>
+        <number>4</number>
+        <prettyName>Parse content</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </parse>
+      <use>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>use</name>
+        <number>3</number>
+        <prettyName>Use this extension</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>currentPage|onDemand|always</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </use>
+    </class>
+    <property>
+      <cache>long</cache>
+    </property>
+    <property>
+      <code>require(["jquery"], function($) {
+  function updateCheckboxes(container, check) {
+    container.find("input[name=page][type=checkbox]").each(function() {
+      $(this).prop("checked", check);
+    });
+  }
+
+  $("a.selectAll").click(function(event) {
+    event.preventDefault();
+    console.log("test");
+    updateCheckboxes($(this).closest("table"), true);
+  })
+
+  $("a.deselectAll").click(function(event) {
+    event.preventDefault();
+    console.log("test2");
+    updateCheckboxes($(this).closest("table"), false);
+  })
+});</code>
+    </property>
+    <property>
+      <name/>
+    </property>
+    <property>
+      <parse/>
+    </property>
+    <property>
+      <use>onDemand</use>
+    </property>
+  </object>
 </xwikidoc>
