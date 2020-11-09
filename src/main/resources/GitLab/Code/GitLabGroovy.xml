@@ -94,6 +94,7 @@ public class GitLabGroovy {
     Boolean removeDates;
     String license;
     String parentDefinitionStrategy;
+    String defaultLanguageDefinitionStrategy;
     def defaultUser = "";
     def status = new HashMap();
     def DEFAULTAUTHOR = "xwiki:XWiki.Admin";
@@ -126,6 +127,7 @@ public class GitLabGroovy {
         this.removeDates = configdoc.getValue("removeDates");
         this.license = configdoc.getValue("license");
         this.parentDefinitionStrategy = (configdoc.getValue("parentDefinitionStrategy") != null) ? configdoc.getValue("parentDefinitionStrategy") : "";
+        this.defaultLanguageDefinitionStrategy = (configdoc.getValue("defaultLanguageDefinitionStrategy") != null) ? configdoc.getValue("defaultLanguageDefinitionStrategy") : "";
         this.defaultUser = configdoc.getValue("defaultuser");
         this.status = getStatus(configdoc.getValue("status"));
 
@@ -246,18 +248,21 @@ public class GitLabGroovy {
 
     public getXML(pagedoc, boolean withFormat) {
         def clonedDoc = pagedoc.document.clone();
+        boolean isTranslationDocument = false;
 
         if ((this.parentDefinitionStrategy.isBlank() || this.parentDefinitionStrategy.equals("setDefault")) &amp;&amp; clonedDoc.getParent().isBlank()) {
             clonedDoc.setParent(clonedDoc.getSpace() + ".WebHome");
         }
 
-        if (clonedDoc.getObject("XWiki.TranslationDocumentClass")) {
+        // If the cloned document is a translation, we won't be able to know directly if it has a TranslationDocumentClass ; the quick and dirty way to check it is to get the default document.
+        if (xwiki.getDocument(clonedDoc.getFullName()).getObject("XWiki.TranslationDocumentClass")) {
             if (clonedDoc.getSyntaxId()!="plain/1.0") {
                 clonedDoc.setSyntaxId("plain/1.0");
             }
             if (!clonedDoc.isHidden()) {
                 clonedDoc.setHidden(true);
             }
+            isTranslationDocument = true;
         }
 
         // remove Tag object
@@ -317,7 +322,7 @@ public class GitLabGroovy {
         clonedDoc.setMinorEdit(false);
         def c = clonedDoc.toXML(true, false, true, false, context.getContext())
         def c2 = c.trim().replaceAll("[\r]","");
-        return (withFormat) ? format(c2, "") : c2;
+        return (withFormat) ? format(c2, "", isTranslationDocument) : c2;
     }
 
     /**
@@ -1020,7 +1025,7 @@ public class GitLabGroovy {
         }
     }
     // formats the XWiki XML including indentation
-    def String format(String data, String defaultLanguage) throws Exception
+    def String format(String data, String defaultLanguage, boolean isTranslationDocument) throws Exception
     {
         def sr = new StringReader(data);
         SAXReader reader = new SAXReader();
@@ -1052,6 +1057,14 @@ public class GitLabGroovy {
 
         if (this.parentDefinitionStrategy.equals("remove")) {
             removeNodes("xwikidoc/parent", domdoc);
+        }
+
+        if (this.defaultLanguageDefinitionStrategy.equals("alwaysBlank")
+            || (!isTranslationDocument &amp;&amp; this.defaultLanguageDefinitionStrategy.equals("blankIfNotTranslation"))) {
+          Node node = rnode.selectSingleNode("//defaultLanguage/text()");
+          if (node != null) {
+            node.detach();
+          }
         }
 
         def baos = new ByteArrayOutputStream()

@@ -103,6 +103,11 @@ GitLab.Code.GitLabConfigClass_parentDefinitionStrategy_tooltip=Behavior to apply
 GitLab.Code.GitLabConfigClass_parentDefinitionStrategy_setDefault=Set ${doc.space}.WebHome as the parent if nothing is defined
 GitLab.Code.GitLabConfigClass_parentDefinitionStrategy_keepAsIs=Keep the parent field as-is
 GitLab.Code.GitLabConfigClass_parentDefinitionStrategy_remove=Remove the parent field
+GitLab.Code.GitLabConfigClass_defaultLanguageDefinitionStrategy=Default language definition strategy
+GitLab.Code.GitLabConfigClass_defaultLanguageDefinitionStrategy_tooltip=Behavior to apply towards the defaultLanguage attribute of the documents
+GitLab.Code.GitLabConfigClass_defaultLanguageDefinitionStrategy_keepAsIs=Keep the defaultLanguage field as-is
+GitLab.Code.GitLabConfigClass_defaultLanguageDefinitionStrategy_blankIfNotTranslation=Empty the defaultLanguage if the document is not a translation document
+GitLab.Code.GitLabConfigClass_defaultLanguageDefinitionStrategy_alwaysBlank=Always empty the defaultLanguage
 GitLab.Code.GitLabConfigClass_status=Commit Status
 
 GitLab.Code.GitLabAuthClass_username=GitLab User
@@ -125,8 +130,6 @@ GitLab.Code.GitLabAuthClass_password=GitLab Password</content>
         <cache>0</cache>
         <disabled>0</disabled>
         <displayType>select</displayType>
-        <freeText>forbidden</freeText>
-        <largeStorage>0</largeStorage>
         <multiSelect>0</multiSelect>
         <name>scope</name>
         <number>1</number>

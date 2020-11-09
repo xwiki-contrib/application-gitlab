@@ -34,8 +34,8 @@
   <title>GitLabApp Translations</title>
   <comment/>
   <minorEdit>false</minorEdit>
-  <syntaxId>xwiki/2.0</syntaxId>
-  <hidden>false</hidden>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>true</hidden>
   <content>gitlab.title=Application GitLab
 gitlab.description=Bienvenue sur l'application gitlab. Vous pouvez configurer votre module GitLab pour connecter votre wiki et commiter votre code XWiki.
 gitlab.currentconfigs.title=Configurations GitLab disponibles
