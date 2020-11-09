@@ -65,6 +65,30 @@
         <validationRegExp/>
         <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
       </contribVersion>
+      <defaultLanguageDefinitionStrategy>
+        <cache>0</cache>
+        <customDisplay/>
+        <defaultValue>blankIfNotTranslation</defaultValue>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText/>
+        <hint/>
+        <multiSelect>0</multiSelect>
+        <name>defaultLanguageDefinitionStrategy</name>
+        <number>16</number>
+        <picker>1</picker>
+        <prettyName>Default language definition strategy</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <sort/>
+        <unmodifiable>0</unmodifiable>
+        <validationMessage/>
+        <validationRegExp/>
+        <values>alwaysBlank|blankIfNotTranslation|keepAsIs</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </defaultLanguageDefinitionStrategy>
       <defaultdate>
         <customDisplay/>
         <dateFormat>dd/MM/yyyy</dateFormat>
@@ -269,7 +293,7 @@
         <editor>Text</editor>
         <hint/>
         <name>status</name>
-        <number>16</number>
+        <number>17</number>
         <picker>0</picker>
         <prettyName>Status</prettyName>
         <rows>5</rows>
@@ -310,6 +334,9 @@
     </class>
     <property>
       <contribVersion>8.4</contribVersion>
+    </property>
+    <property>
+      <defaultLanguageDefinitionStrategy>blankIfNotTranslation</defaultLanguageDefinitionStrategy>
     </property>
     <property>
       <defaultdate>2018-01-01 00:00:00.0</defaultdate>
