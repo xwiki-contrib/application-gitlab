@@ -36,5 +36,7 @@
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.0</syntaxId>
   <hidden>false</hidden>
-  <content>This space contains the GitLab Commit application code.</content>
+  <content>This space contains the GitLab Commit application code.
+
+{{children/}}</content>
 </xwikidoc>

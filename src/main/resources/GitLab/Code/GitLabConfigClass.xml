@@ -70,7 +70,7 @@
       <hint/>
       <multiSelect>0</multiSelect>
       <name>defaultLanguageDefinitionStrategy</name>
-      <number>16</number>
+      <number>17</number>
       <picker>1</picker>
       <prettyName>Default language definition strategy</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -91,7 +91,7 @@
       <emptyIsToday>0</emptyIsToday>
       <hint/>
       <name>defaultdate</name>
-      <number>11</number>
+      <number>12</number>
       <picker>1</picker>
       <prettyName>Default Date</prettyName>
       <size>20</size>
@@ -105,7 +105,7 @@
       <disabled>0</disabled>
       <hint/>
       <name>defaultspace</name>
-      <number>10</number>
+      <number>11</number>
       <picker>0</picker>
       <prettyName>Default Spaces</prettyName>
       <size>30</size>
@@ -119,7 +119,7 @@
       <disabled>0</disabled>
       <hint/>
       <name>defaultuser</name>
-      <number>13</number>
+      <number>14</number>
       <picker>0</picker>
       <prettyName>Default User</prettyName>
       <size>30</size>
@@ -171,7 +171,7 @@
       <idField/>
       <multiSelect>0</multiSelect>
       <name>license</name>
-      <number>14</number>
+      <number>15</number>
       <picker>1</picker>
       <prettyName>License document</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -210,7 +210,7 @@
       <hint/>
       <multiSelect>0</multiSelect>
       <name>parentDefinitionStrategy</name>
-      <number>15</number>
+      <number>16</number>
       <picker>1</picker>
       <prettyName>Parent definition strategy</prettyName>
       <relationalStorage>0</relationalStorage>
@@ -232,13 +232,27 @@
       <displayType/>
       <hint/>
       <name>removeDates</name>
-      <number>12</number>
+      <number>13</number>
       <prettyName>Remove dates</prettyName>
       <unmodifiable>0</unmodifiable>
       <validationMessage/>
       <validationRegExp/>
       <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
     </removeDates>
+    <repository_branch>
+      <customDisplay/>
+      <disabled>0</disabled>
+      <hint/>
+      <name>repository_branch</name>
+      <number>10</number>
+      <picker>0</picker>
+      <prettyName>Repository Branch</prettyName>
+      <size>30</size>
+      <unmodifiable>0</unmodifiable>
+      <validationMessage/>
+      <validationRegExp/>
+      <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+    </repository_branch>
     <repository_name>
       <customDisplay/>
       <disabled>0</disabled>
@@ -288,7 +302,7 @@
       <editor>Text</editor>
       <hint/>
       <name>status</name>
-      <number>17</number>
+      <number>18</number>
       <picker>0</picker>
       <prettyName>Status</prettyName>
       <rows>5</rows>

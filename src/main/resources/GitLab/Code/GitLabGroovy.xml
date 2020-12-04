@@ -83,6 +83,7 @@ public class GitLabGroovy {
     def repname = "";
     def reppath = "";
     def repsrcpath = "src/main/resources";
+    def repbranch = "";
     def defaultspace = "";
     def configdoc;
     def savedlist = "";
@@ -121,6 +122,7 @@ public class GitLabGroovy {
         this.repuser = configdoc.getValue("repository_user");
         this.repname = configdoc.getValue("repository_name");
         this.reppath = configdoc.getValue("repository_path");
+        this.repbranch = (StringUtils.isBlank(configdoc.getValue("repository_branch"))) ? "master" : configdoc.getValue("repository_branch");
         this.defaultspace = configdoc.getValue("defaultspace");
         this.savedlist = configdoc.getValue("savedlist");
         this.defaultDate = configdoc.getValue("defaultdate");
@@ -437,7 +439,7 @@ public class GitLabGroovy {
         if (pom=="1") {
             def action = [:];
             try {
-                gitlabapi.getRepositoryFile(gitlabproject, "pom.xml", "master")
+                gitlabapi.getRepositoryFile(gitlabproject, "pom.xml", repbranch)
                 action.action = "update"
             } catch(e) {
                 action.action = "create"
@@ -449,7 +451,7 @@ public class GitLabGroovy {
         }
 
         // now real commit
-        def newCommit = gitLabCommits("master", message, actions);
+        def newCommit = gitLabCommits(repbranch, message, actions);
         logger.debug("Created commit: " + newCommit);
 
         // we need to save the status
@@ -880,7 +882,7 @@ public class GitLabGroovy {
         for (file in tree) {
             if (file.type=="blob") {
                 if (file.path.startsWith(srcPath)) {
-                    def file2 = gitlabapi.getRepositoryFile(gitlabproject, file.path, "master")
+                    def file2 = gitlabapi.getRepositoryFile(gitlabproject, file.path, repbranch)
                     def gitlabcontent = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8");
                     // calculate the hash before formatting
                     def gitlabhash_unformatted = (gitlabcontent==null) ? "" : gitlabcontent.hashCode();
@@ -897,7 +899,7 @@ public class GitLabGroovy {
     }
 
     public getXMLForDiff(pagedoc, filePath, withFormat) {
-        def file2 = gitlabapi.getRepositoryFile(gitlabproject, filePath, "master")
+        def file2 = gitlabapi.getRepositoryFile(gitlabproject, filePath, repbranch)
         def gitlabxml = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8");
         if (withFormat)
             gitlabxml = cleanXML(gitlabxml, true);
@@ -922,7 +924,7 @@ public class GitLabGroovy {
     }
 
     public showXMLDiff(pagedoc, filePath, withFormat) {
-        def file2 = gitlabapi.getRepositoryFile(gitlabproject, filePath, "master")
+        def file2 = gitlabapi.getRepositoryFile(gitlabproject, filePath, repbranch)
         def gitlabxml = new String(Base64.decodeBase64(file2.content.getBytes()), "UTF-8");
         if (withFormat)
             gitlabxml = cleanXML(gitlabxml, true);
