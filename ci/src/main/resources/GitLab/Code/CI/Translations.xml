@@ -1,0 +1,113 @@
+<?xml version="1.1" encoding="UTF-8"?>
+
+<!--
+ * See the NOTICE file distributed with this work for additional
+ * information regarding copyright ownership.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+-->
+
+<xwikidoc version="1.4" reference="GitLab.Code.CI.Translations" locale="">
+  <web>GitLab.Code.CI</web>
+  <name>Translations</name>
+  <parent>WebHome</parent>
+  <language/>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>0</translation>
+  <creator>xwiki:XWiki.Admin</creator>
+  <author>xwiki:XWiki.Admin</author>
+  <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
+  <version>1.1</version>
+  <title/>
+  <comment/>
+  <minorEdit>false</minorEdit>
+  <syntaxId>plain/1.0</syntaxId>
+  <hidden>true</hidden>
+  <content>GitLab.Code.CI.GitLabConfigClass_extensionid=Extension Id
+GitLab.Code.CI.GitLabConfigClass_projecturl=Project Url
+GitLab.Code.CI.GitLabConfigClass_projectid=Project id
+GitLab.Code.CI.GitLabConfigClass_branchname=Branch name
+GitLab.Code.CI.GitLabConfigClass_pipelineurl=Gitlab pipeline Url
+GitLab.Code.CI.GitLabConfigClass_projectauth=Project Auth
+
+GitLab.Code.CI.GitLabConfigSheet.label=GitLab Instance Definitions
+GitLab.Code.CI.GitLabConfigSheet.label.hint=Defines access to GitLab.
+GitLab.Code.CI.GitLabConfigSheet.delete=Delete
+GitLab.Code.CI.GitLabConfigSheet.save=Save
+GitLab.Code.CI.GitLabConfigSheet.add=Add GitLab instance
+
+GitLab.Code.CI.GitLabCIStatusMacro.extensionId=Extension Id
+GitLab.Code.CI.GitLabCIStatusMacro.installed=Installed
+GitLab.Code.CI.GitLabCIStatusMacro.installationDate=Installation Date
+GitLab.Code.CI.GitLabCIStatusMacro.commitInformation=Commit information
+GitLab.Code.CI.GitLabCIStatusMacro.pipeline=Pipeline Status &amp; manual run
+
+GitLab.Code.CI.GitLabCIStatusMacro.description=This macros display the status of the specified git CIs, and compares it to the installed module version. \n\nThose CIs can be configured in the {0}. \n\nIt is recommended to use a cache macro in order to improve performance.
+GitLab.Code.CI.GitLabCIStatusMacro.description.administrationPanelLinkTitle=administration panel
+GitLab.Code.CI.GitLabCIStatusMacro.UsageTitle=Usage
+GitLab.Code.CI.GitLabCIStatusMacro.ExampleTitle=Example
+
+GitLab.Code.CI.GitLabCIStatusMacro.authorizationError=Authorization for {0} is invalid. Authentication configuration is probably invalid.
+GitLab.Code.CI.GitLabCIStatusMacro.badResponseCodeError=Response code for {0} is invalid ({1}). Git url is probably invalid.
+GitLab.Code.CI.GitLabCIStatusMacro.genericError=Exception for {0} is invalid. Git url is probably invalid.
+
+GitLab.Code.CI.GitLabCIStatusMacro.commitNotFound=Could not find last commit. Check url and branch name.
+GitLab.Code.CI.GitLabCIStatusMacro.lastCommitLinkTitle=Last commit
+GitLab.Code.CI.GitLabCIStatusMacro.lastCommitInstalled={0} is installed: "{1}" by {2} on {3}
+GitLab.Code.CI.GitLabCIStatusMacro.lastCommitNotInstalled={0} is not installed: "{1}" by {2} on {3}
+GitLab.Code.CI.GitLabCIStatusMacro.pipelineLinkTitle=Pipeline
+
+
+
+</content>
+  <object>
+    <name>GitLab.Code.CI.Translations</name>
+    <number>0</number>
+    <className>XWiki.TranslationDocumentClass</className>
+    <guid>40037de8-0a56-408e-9554-fde7668ca393</guid>
+    <class>
+      <name>XWiki.TranslationDocumentClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>1</number>
+        <prettyName>Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>GLOBAL|WIKI|USER|ON_DEMAND</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <scope>WIKI</scope>
+    </property>
+  </object>
+</xwikidoc>
