@@ -20,8 +20,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GitLab.Macros.GitLabMacro" locale="">
-  <web>GitLab.Macros</web>
+<xwikidoc version="1.4" reference="GitLab.Code.Macros.GitLabMacro" locale="">
+  <web>GitLab.Code.Macros</web>
   <name>GitLabMacro</name>
   <language/>
   <defaultLanguage/>
@@ -99,7 +99,7 @@ state=closed
 
 </content>
   <object>
-    <name>GitLab.Macros.GitLabMacro</name>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
     <number>0</number>
     <className>XWiki.WikiMacroClass</className>
     <guid>f1c9dd30-1564-4b8e-8bf5-812b94458cae</guid>
@@ -313,12 +313,15 @@ def getContentFromURL(url, token) {
         debug("${url}")
         debug("{{{ ${result} }}}")
         return result;
+      } else if (conn.responseCode == 401) {
+        println "{{error}}" + services.localization.render("gitlab.macros.authfailed") + "{{/error}}"
+        return null;
       } else {
-        println "Response code not 200: ${url} ${conn.responseCode}"
+        println "{{error}}Response code not 200 accessing ${url}.GitLab instance URL might be incorrect. Code ${conn.responseCode}{{/error}}"
         return null;
       }
     } catch (e) {
-      println "Exception ${e}"
+      println "{{error}}Exception accessing ${url}. GitLab instance URL might be incorrect.\n${e}{{/error}}"
       return null;
    }
  }
@@ -422,42 +425,49 @@ def displayIssue(issue, fields, style) {
    }
  }
 }
-  
+
 try {
-def instanceId = xcontext.macro.params.id
-def authobj = xwiki.getDocument("GitLab.Macros.GitLabConfig").getObject("GitLab.Macros.GitLabConfigClass", "id", instanceId)
-if (authobj) {
-  token = authobj.getProperty("token").property.value
-  url = authobj.getProperty("url").property.value
-}
-
-projectId =  xcontext.macro.params.projectId
-gitlabapiUrl = url + "/api/v4/";
-gitlabproject = getProject(projectId)
-baseRepoUrl = "${gitlabproject.web_url}/-/blob/${gitlabproject.default_branch}/"
-
-def style = xcontext.macro.params.style
-
-def fields = "id,title,state,created_at,closed_at"
-if (style=="table") {
-  for (field in fields.split(","))
-   print "|= ${field}"
-  println ""
-}
-
-if (xcontext.macro.params.source &amp;&amp; xcontext.macro.params.source=="query") {
-  def issueFilter = xcontext.macro.content.split("\r\n").join("&amp;");
-  def issues = getIssues(issueFilter)
-  for (issue in issues) {
-    displayIssue(issue, fields, style)
+  def instanceId = xcontext.macro.params.id
+  def authobj = xwiki.getDocument("GitLab.Code.Macros.GitLabConfig").getObject("GitLab.Code.Macros.GitLabConfigClass", "id", instanceId)
+  token = ""
+  if (authobj) {
+    token = authobj.getProperty("token").property.value
+    url = authobj.getProperty("url").property.value
   }
-} else if (xcontext.macro.content &amp;&amp; xcontext.macro.content.trim()!="") {
- def issues = xcontext.macro.content
- for (issueId in issues.split(",")) {
-   def issue = getIssue(issueId)
-   displayIssue(issue, fields, style)
- }
-}
+
+  if (url==null || url=="" || !url.startsWith("http")) {
+    println "{{error}}" + services.localization.render("gitlab.macros.badurl") + "{{/error}}"
+  } else {
+    projectId =  xcontext.macro.params.projectId
+    gitlabapiUrl = url + "/api/v4/";
+    gitlabproject = getProject(projectId)
+    if (gitlabproject!=null) {
+    baseRepoUrl = "${gitlabproject.web_url}/-/blob/${gitlabproject.default_branch}/"
+
+    def style = xcontext.macro.params.style
+
+    def fields = "id,title,state,created_at,closed_at"
+    if (style=="table") {
+      for (field in fields.split(","))
+       print "|= ${field}"
+      println ""
+    }
+
+    if (xcontext.macro.params.source &amp;&amp; xcontext.macro.params.source=="query") {
+      def issueFilter = xcontext.macro.content.split("\r\n").join("&amp;");
+      def issues = getIssues(issueFilter)
+      for (issue in issues) {
+        displayIssue(issue, fields, style)
+      }
+    } else if (xcontext.macro.content &amp;&amp; xcontext.macro.content.trim()!="") {
+       def issues = xcontext.macro.content
+       for (issueId in issues.split(",")) {
+         def issue = getIssue(issueId)
+         displayIssue(issue, fields, style)
+       }
+      }
+    }
+  }
 } catch (e) {
   println e;
 }
@@ -495,7 +505,7 @@ if (request.debug)
     </property>
   </object>
   <object>
-    <name>GitLab.Macros.GitLabMacro</name>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
     <number>0</number>
     <className>XWiki.WikiMacroParameterClass</className>
     <guid>4424d0b1-9f8b-4e42-9f1d-ff1ff96b181b</guid>
@@ -573,7 +583,7 @@ if (request.debug)
     </property>
   </object>
   <object>
-    <name>GitLab.Macros.GitLabMacro</name>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
     <number>1</number>
     <className>XWiki.WikiMacroParameterClass</className>
     <guid>295bab54-1851-418f-bf95-359de7d631f2</guid>
@@ -651,7 +661,7 @@ if (request.debug)
     </property>
   </object>
   <object>
-    <name>GitLab.Macros.GitLabMacro</name>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
     <number>2</number>
     <className>XWiki.WikiMacroParameterClass</className>
     <guid>11790f22-d58e-4d50-ba35-d38cd7bd0212</guid>
@@ -729,7 +739,7 @@ if (request.debug)
     </property>
   </object>
   <object>
-    <name>GitLab.Macros.GitLabMacro</name>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
     <number>3</number>
     <className>XWiki.WikiMacroParameterClass</className>
     <guid>832096a8-8cdc-45e9-8051-741e8ac1ae1e</guid>

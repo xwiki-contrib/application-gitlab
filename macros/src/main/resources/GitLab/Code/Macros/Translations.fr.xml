@@ -20,22 +20,32 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GitLab.Macros.WebHome" locale="">
-  <web>GitLab.Macros</web>
-  <name>WebHome</name>
-  <parent>GitLab.WebHome</parent>
-  <language/>
-  <defaultLanguage/>
-  <translation>0</translation>
+<xwikidoc version="1.4" reference="GitLab.Code.Macros.Translations" locale="fr">
+  <web>GitLab.Code.Macros</web>
+  <name>Translations</name>
+  <parent>WebHome</parent>
+  <language>fr</language>
+  <defaultLanguage>en</defaultLanguage>
+  <translation>1</translation>
   <creator>xwiki:XWiki.Admin</creator>
   <author>xwiki:XWiki.Admin</author>
   <contentAuthor>xwiki:XWiki.Admin</contentAuthor>
   <version>1.1</version>
-  <title>GitLab Macro Code</title>
+  <title>Translations</title>
   <comment/>
   <minorEdit>false</minorEdit>
   <syntaxId>xwiki/2.1</syntaxId>
-  <hidden>true</hidden>
-  <content>
-{{children /}}</content>
+  <hidden>false</hidden>
+  <content>admin.gitlab=Macros GitLab
+gitlab.config.label=Définition des instances GitLab
+gitlab.config.label.hint=Ces entrées définissent les instances GitLab associées à une ID pour chacune d'elle et permettent de fournir un token d'accès. Cette ID peut-être utilisée dans les paramètres des macros GitLab.
+gitlab.config.id=Id
+gitlab.config.url=URL de l'instance GitLab
+gitlab.config.token=Token d'accès à l'instance GitLab
+gitlab.config.delete=Effacer
+gitlab.config.save=Sauvegarder
+gitlab.config.add=Ajouter une instance GitLab
+gitlab.macros.badurl=Vous n'avez pas fourni une URL valide pour l'instance GitLab
+gitlab.macros.authfailed=Error d'authentification lors de l'accès à l'instance GitLab
+</content>
 </xwikidoc>

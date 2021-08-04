@@ -20,8 +20,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GitLab.Macros.GitLabConfigSheet" locale="">
-  <web>GitLab.Macros</web>
+<xwikidoc version="1.4" reference="GitLab.Code.Macros.GitLabConfigSheet" locale="">
+  <web>GitLab.Code.Macros</web>
   <name>GitLabConfigSheet</name>
   <language/>
   <defaultLanguage/>
@@ -38,9 +38,9 @@
   <hidden>true</hidden>
   <content>{{velocity}}
 #set ($redirect = $xwiki.relativeRequestURL)
-#set ($configDoc = $xwiki.getDocument('GitLab.Macros.GitLabConfig'))
+#set ($configDoc = $xwiki.getDocument('GitLab.Code.Macros.GitLabConfig'))
 ## If there's no xobject create one!
-#set ($configClassName = 'GitLab.Macros.GitLabConfigClass')
+#set ($configClassName = 'GitLab.Code.Macros.GitLabConfigClass')
 #set ($configObject = $configDoc.getObject($configClassName))
 #if ($xcontext.action == 'admin' &amp;&amp; "$!configObject" == '')
   #set ($configObject = $configDoc.newObject($configClassName))
@@ -59,6 +59,12 @@
           &lt;div id='gitlabInstances'&gt;
 {{/html}}
 
+#if ($request.add)
+  #set ($newConfigObject = $configDoc.newObject($configClassName))
+  #set ($discard = $configDoc.save('Added GitLab Macros configuration', true))
+  $response.sendRedirect($xwiki.relativeRequestURL.replaceAll("&amp;add=1", ""))
+#end
+
 |=$services.localization.render('gitlab.config.id')|=$services.localization.render('gitlab.config.url')|=$services.localization.render('gitlab.config.token')|=$services.localization.render('gitlab.config.delete')
 #foreach($serverObject in $configDoc.getObjects($configClassName))
   #set ($deleteURL = $configDoc.getURL('objectremove', "form_token=$!{services.csrf.getToken()}&amp;classname=${escapetool.url($configClassName)}&amp;classid=${serverObject.number}&amp;xredirect=${escapetool.url($redirect)}"))
@@ -66,14 +72,14 @@
 #end
 
 {{html clean="false"}}
-          &lt;/div&gt;        
+          &lt;/div&gt;
         &lt;/dd&gt;
       &lt;/dl&gt;
     &lt;/fieldset&gt;
     &lt;input type="hidden" name="form_token" value="$!{services.csrf.getToken()}" /&gt;
     &lt;input type="submit" value="$services.localization.render('gitlab.config.save')" name="formactionsac" class="button" /&gt;
     &lt;span class="buttonwrapper"&gt;
-      &lt;a href="$configDoc.getURL('edit', "xpage=editobject&amp;amp;xaction=addObject&amp;amp;className=$escapetool.url($configClassName)&amp;amp;xredirect=$escapetool.url(${redirect})")" class="xobject-add-control"&gt;$services.localization.render('gitlab.config.add')&lt;/a&gt;
+      &lt;a href="${xwiki.relativeRequestURL}&amp;add=1" class="xobject-add-control"&gt;$services.localization.render('gitlab.config.add')&lt;/a&gt;
     &lt;/span&gt;
   &lt;/form&gt;
 {{/html}}

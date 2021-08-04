@@ -20,8 +20,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GitLab.Macros.GitLabConfigClass" locale="">
-  <web>GitLab.Macros</web>
+<xwikidoc version="1.4" reference="GitLab.Code.Macros.GitLabConfigClass" locale="">
+  <web>GitLab.Code.Macros</web>
   <name>GitLabConfigClass</name>
   <language/>
   <defaultLanguage/>
@@ -38,7 +38,7 @@
   <hidden>true</hidden>
   <content/>
   <class>
-    <name>GitLab.Macros.GitLabConfigClass</name>
+    <name>GitLab.Code.Macros.GitLabConfigClass</name>
     <customClass/>
     <customMapping/>
     <defaultViewSheet/>

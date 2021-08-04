@@ -20,8 +20,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GitLab.Macros.Translations" locale="">
-  <web>GitLab.Macros</web>
+<xwikidoc version="1.4" reference="GitLab.Code.Macros.Translations" locale="">
+  <web>GitLab.Code.Macros</web>
   <name>Translations</name>
   <language/>
   <defaultLanguage>en</defaultLanguage>
@@ -44,9 +44,11 @@ gitlab.config.url=GitLab URL
 gitlab.config.token=Token
 gitlab.config.delete=Delete
 gitlab.config.save=Save
-gitlab.config.add=Add GitLab instance</content>
+gitlab.config.add=Add GitLab instance
+gitlab.macros.badurl=No or wrong URL provided for GitLab instance
+gitlab.macros.authfailed=Authentication failed accessing GitLab instance</content>
   <object>
-    <name>GitLab.Macros.Translations</name>
+    <name>GitLab.Code.Macros.Translations</name>
     <number>0</number>
     <className>XWiki.TranslationDocumentClass</className>
     <guid>c853a0b8-bc6f-46b0-8322-735702de28d4</guid>

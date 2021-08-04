@@ -20,8 +20,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 -->
 
-<xwikidoc version="1.4" reference="GitLab.Macros.GitLabConfig" locale="">
-  <web>GitLab.Macros</web>
+<xwikidoc version="1.4" reference="GitLab.Code.Macros.GitLabConfig" locale="">
+  <web>GitLab.Code.Macros</web>
   <name>GitLabConfig</name>
   <language/>
   <defaultLanguage/>
@@ -38,12 +38,12 @@
   <hidden>true</hidden>
   <content/>
   <object>
-    <name>GitLab.Macros.GitLabConfig</name>
+    <name>GitLab.Code.Macros.GitLabConfig</name>
     <number>0</number>
-    <className>GitLab.Macros.GitLabConfigClass</className>
-    <guid>a1a5c79f-88bb-41f2-b62a-070c267ba962</guid>
+    <className>GitLab.Code.Macros.GitLabConfigClass</className>
+    <guid>d02e332d-a095-4a70-be26-0719c88bdc25</guid>
     <class>
-      <name>GitLab.Macros.GitLabConfigClass</name>
+      <name>GitLab.Code.Macros.GitLabConfigClass</name>
       <customClass/>
       <customMapping/>
       <defaultViewSheet/>
@@ -97,17 +97,17 @@
       </url>
     </class>
     <property>
-      <id></id>
+      <id/>
     </property>
     <property>
-      <token></token>
+      <token/>
     </property>
     <property>
-      <url></url>
+      <url/>
     </property>
   </object>
   <object>
-    <name>GitLab.Macros.GitLabConfig</name>
+    <name>GitLab.Code.Macros.GitLabConfig</name>
     <number>0</number>
     <className>XWiki.ConfigurableClass</className>
     <guid>19c9729d-84b5-4dfc-8081-208cad2a10f4</guid>
@@ -304,7 +304,7 @@
       <categoryIcon/>
     </property>
     <property>
-      <codeToExecute>{{include reference="GitLab.Macros.GitLabConfigSheet"/}}
+      <codeToExecute>{{include reference="GitLab.Code.Macros.GitLabConfigSheet"/}}
 </codeToExecute>
     </property>
     <property>
