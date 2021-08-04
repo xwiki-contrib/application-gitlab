@@ -30,12 +30,9 @@
   <groupId>org.xwiki.contrib.gitlab</groupId>
   <artifactId>application-gitlab</artifactId>
   <version>1.0.8-SNAPSHOT</version>
-  <packaging>xar</packaging>
-  <name>GitLab Application</name>
-  <description>Allows committing XWiki pages to a GitLab repository</description>
+  <packaging>pom</packaging>
+  <name>GitLab - Parent POM</name>
   <properties>
-    <platform.version>${commons.version}</platform.version>
-    <xwiki.extension.category>application</xwiki.extension.category>
     <!-- Enable auto release on jira -->
     <xwiki.release.jira.skip>false</xwiki.release.jira.skip>
     <xwiki.issueManagement.jira.id>XGITLAB</xwiki.issueManagement.jira.id>
@@ -52,13 +49,6 @@
       <organization>XWiki SAS</organization>
     </developer>
   </developers>
-  <dependencies>
-    <dependency>
-      <groupId>org.gitlab</groupId>
-      <artifactId>java-gitlab-api</artifactId>
-      <version>4.1.1-xwiki</version>
-    </dependency>
-  </dependencies>
   <build>
     <!-- Needed to add support for the XAR packaging -->
     <extensions>
@@ -75,4 +65,9 @@
     <url>https://github.com/xwiki-contrib/application-gitlab</url>
     <tag>HEAD</tag>
   </scm>
+  <modules>
+    <module>ci</module>
+    <module>commit</module>
+    <module>macros</module>
+  </modules>
 </project>
