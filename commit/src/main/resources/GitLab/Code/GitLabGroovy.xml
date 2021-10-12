@@ -877,7 +877,7 @@ public class GitLabGroovy {
     public getEntries(String spaces) {
         def entries = new HashMap();
 
-        def tree = gitlabapi.getRepositoryTree(gitlabproject, "", null, true);
+        def tree = gitlabapi.getRepositoryTree(gitlabproject, "", repbranch, true);
         def srcPath = getSourcePath();
         for (file in tree) {
             if (file.type=="blob") {
