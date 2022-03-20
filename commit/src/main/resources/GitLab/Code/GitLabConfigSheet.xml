@@ -47,7 +47,7 @@
     &lt;label#if ($xcontext.action == 'edit') for="${object.xWikiClass.name}_${object.number}_${propertyName}"#end&gt;$escapetool.xml($doc.displayPrettyName($propertyName, false, false))&lt;/label&gt;
   #if ("$!tooltip" != '')&lt;span class="xHint"&gt;$escapetool.xml($tooltip)&lt;/span&gt;#end
   &lt;/dt&gt;
-  &lt;dd&gt;{{/html}}${doc.display($propertyName)}{{html clean="false"}}&lt;/dd&gt;
+  &lt;dd&gt;{{/html}}${doc.display($propertyName, $object)}{{html clean="false"}}&lt;/dd&gt;
 #end
 {{/velocity}}
 
