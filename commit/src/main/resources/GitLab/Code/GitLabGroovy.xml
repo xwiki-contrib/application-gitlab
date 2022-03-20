@@ -546,7 +546,7 @@ public class GitLabGroovy {
             samePages.add(filePath);
             def pageStatus = getPageStatus(getStatusPath(pagedoc));
             if (pageStatus==null) {
-                pageStatus = [ "xwikiversion" : "", "xwikihash" : "", "gitlabversion" : "", , "gitlabsha" : "" ];
+                pageStatus = [ "xwikiversion" : "", "xwikihash" : "", "gitlabversion" : "", "gitlabsha" : "" ];
                 status.put(getStatusPath(pagedoc), pageStatus);
             }
             pageStatus.xwikiversion = pagedoc.getVersion();
