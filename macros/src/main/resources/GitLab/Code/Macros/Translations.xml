@@ -46,7 +46,15 @@ gitlab.config.delete=Delete
 gitlab.config.save=Save
 gitlab.config.add=Add GitLab instance
 gitlab.macros.badurl=No or wrong URL provided for GitLab instance
-gitlab.macros.authfailed=Authentication failed accessing GitLab instance</content>
+gitlab.macros.authfailed=Authentication failed accessing GitLab instance
+gitlab.macros.field.assignee.name=Assignee
+gitlab.macros.field.closed_at=Closed at
+gitlab.macros.field.created_at=Created at
+gitlab.macros.field.id=ID
+gitlab.macros.field.milestone.title=Milestone
+gitlab.macros.field.state=State
+gitlab.macros.field.title=Title
+gitlab.macros.field.updated_at=Updated at</content>
   <object>
     <name>GitLab.Code.Macros.Translations</name>
     <number>0</number>

@@ -404,10 +404,16 @@ def displayIssue(issue, fields, style) {
          else
            print "|[[${issue.iid}&gt;&gt;url:${issue.web_url}]]"
        } else {
-           def value = issue[field]
-           if (value==null)
-             value = ""
-           print "|((( ${value} )))"
+         def value = issue;
+         field.split('\\.').each { fieldPart -&gt;
+           if (value != null) {
+             value = value[fieldPart];
+           }
+         }
+         if (value==null) {
+           value = "";
+         }
+         print "|((( ${value} )))";
        }
      }
      println ""
@@ -446,10 +452,10 @@ try {
 
     def style = xcontext.macro.params.style
 
-    def fields = "id,title,state,created_at,closed_at"
+    def fields = wikimacro.parameters.fields;
     if (style=="table") {
       for (field in fields.split(","))
-       print "|= ${field}"
+       print "|= {{translation key=\"gitlab.macros.field.${field}\" /}}";
       println ""
     }
 
@@ -813,7 +819,85 @@ if (request.debug)
       <name>source</name>
     </property>
     <property>
-      <type/>
+      <type></type>
+    </property>
+  </object>
+  <object>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
+    <number>4</number>
+    <className>XWiki.WikiMacroParameterClass</className>
+    <guid>a1173980-51bf-4809-80e6-0139fab3d7e3</guid>
+    <class>
+      <name>XWiki.WikiMacroParameterClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <defaultValue>
+        <disabled>0</disabled>
+        <name>defaultValue</name>
+        <number>4</number>
+        <prettyName>Parameter default value</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </defaultValue>
+      <description>
+        <disabled>0</disabled>
+        <name>description</name>
+        <number>2</number>
+        <prettyName>Parameter description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <mandatory>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>mandatory</name>
+        <number>3</number>
+        <prettyName>Parameter mandatory</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </mandatory>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Parameter name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <type>
+        <disabled>0</disabled>
+        <name>type</name>
+        <number>5</number>
+        <prettyName>Parameter type</prettyName>
+        <size>60</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </type>
+    </class>
+    <property>
+      <defaultValue>id,title,state,created_at,closed_at</defaultValue>
+    </property>
+    <property>
+      <description>Columns to use when displaying the issues in table mode.</description>
+    </property>
+    <property>
+      <mandatory>0</mandatory>
+    </property>
+    <property>
+      <name>fields</name>
+    </property>
+    <property>
+      <type>java.lang.String</type>
     </property>
   </object>
 </xwikidoc>
