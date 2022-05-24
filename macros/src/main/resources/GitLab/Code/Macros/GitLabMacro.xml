@@ -293,6 +293,7 @@ state=closed
     <property>
       <code>{{groovy}}
 import groovy.json.*;
+import java.net.URLEncoder;
 
 debugStr = ""
 
@@ -331,9 +332,10 @@ def getProject(projectId) {
   return getContentFromURL(gitlabapiUrl + "projects/" + projectId, token)
 }
 
-def getIssues(issueFilter) {
+def getIssues(issueFilter, page, perPage) {
   // https://&lt;server&gt;/api/v4/projects/&lt;projectid&gt;/issues/?state=opened&amp;milestone=1.0
-  return getContentFromURL(gitlabapiUrl + "projects/" + projectId + "/issues/?" +  java.net.URLEncoder.encode(issueFilter, "UTF-8"), token)
+  return getContentFromURL(
+    String.format('%sprojects/%s/issues/?page=%s&amp;per_page=%s&amp;%s', gitlabapiUrl, projectId, page, perPage, issueFilter), token);
 }
 
 def getIssue(issueId) {
@@ -460,8 +462,26 @@ try {
     }
 
     if (xcontext.macro.params.source &amp;&amp; xcontext.macro.params.source=="query") {
-      def issueFilter = xcontext.macro.content.split("\r\n").join("&amp;");
-      def issues = getIssues(issueFilter)
+      def issueFilterList = xcontext.macro.content.split('\r\n');
+      for (int i = 0; i &lt; issueFilterList.size(); i++) {
+        def filterEntry = issueFilterList[i].split('=', 2);
+        if (filterEntry.size() == 2) {
+          issueFilterList[i] = URLEncoder.encode(filterEntry[0], xwiki.getEncoding()) + '=' + URLEncoder.encode(filterEntry[1], xwiki.getEncoding());
+        }
+      }
+      def issueFilter = issueFilterList.join('&amp;');
+      def issues = [];
+      if (wikimacro.parameters.page == 0) {
+        // Get every issue. We'll stop at 100 pages fetched (equivalent to max 10 000 issues)
+        // in order to avoid getting into an infinite loop.
+        def tempIssues = [0];
+        for (int pageCount = 1; pageCount &lt; 100 &amp;&amp; tempIssues.size() > 0; pageCount++) {
+          tempIssues = getIssues(issueFilter, pageCount, wikimacro.parameters.pageSize);
+          issues.addAll(tempIssues);
+        }
+      } else {
+        issues = getIssues(issueFilter, wikimacro.parameters.page, wikimacro.parameters.pageSize)
+      }
       for (issue in issues) {
         displayIssue(issue, fields, style)
       }
@@ -898,6 +918,162 @@ if (request.debug)
     </property>
     <property>
       <type>java.lang.String</type>
+    </property>
+  </object>
+  <object>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
+    <number>5</number>
+    <className>XWiki.WikiMacroParameterClass</className>
+    <guid>8ed55ff0-576d-4f14-bd41-85e5396919b1</guid>
+    <class>
+      <name>XWiki.WikiMacroParameterClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <defaultValue>
+        <disabled>0</disabled>
+        <name>defaultValue</name>
+        <number>4</number>
+        <prettyName>Parameter default value</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </defaultValue>
+      <description>
+        <disabled>0</disabled>
+        <name>description</name>
+        <number>2</number>
+        <prettyName>Parameter description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <mandatory>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>mandatory</name>
+        <number>3</number>
+        <prettyName>Parameter mandatory</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </mandatory>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Parameter name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <type>
+        <disabled>0</disabled>
+        <name>type</name>
+        <number>5</number>
+        <prettyName>Parameter type</prettyName>
+        <size>60</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </type>
+    </class>
+    <property>
+      <defaultValue>0</defaultValue>
+    </property>
+    <property>
+      <description>Page number to fetch using the GitLab API. Defaults to 0, which disables pagination.</description>
+    </property>
+    <property>
+      <mandatory>0</mandatory>
+    </property>
+    <property>
+      <name>page</name>
+    </property>
+    <property>
+      <type>java.lang.Integer</type>
+    </property>
+  </object>
+  <object>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
+    <number>6</number>
+    <className>XWiki.WikiMacroParameterClass</className>
+    <guid>2a4e21c0-d571-4505-b131-fec8ab92513d</guid>
+    <class>
+      <name>XWiki.WikiMacroParameterClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <defaultValue>
+        <disabled>0</disabled>
+        <name>defaultValue</name>
+        <number>4</number>
+        <prettyName>Parameter default value</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </defaultValue>
+      <description>
+        <disabled>0</disabled>
+        <name>description</name>
+        <number>2</number>
+        <prettyName>Parameter description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <mandatory>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>mandatory</name>
+        <number>3</number>
+        <prettyName>Parameter mandatory</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </mandatory>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Parameter name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <type>
+        <disabled>0</disabled>
+        <name>type</name>
+        <number>5</number>
+        <prettyName>Parameter type</prettyName>
+        <size>60</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </type>
+    </class>
+    <property>
+      <defaultValue>100</defaultValue>
+    </property>
+    <property>
+      <description>Size of the pages to fetch from GitLab. Defaults to 100, which is the max page size.</description>
+    </property>
+    <property>
+      <mandatory>0</mandatory>
+    </property>
+    <property>
+      <name>pageSize</name>
+    </property>
+    <property>
+      <type>java.lang.Integer</type>
     </property>
   </object>
 </xwikidoc>
