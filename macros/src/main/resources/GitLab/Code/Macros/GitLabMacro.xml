@@ -138,7 +138,7 @@ state=closed
         <separators>|, </separators>
         <size>5</size>
         <unmodifiable>0</unmodifiable>
-        <values>action=Action|doc.reference=Document|icon.theme=Thème des icônes|locale=Langue|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=URL de base pour la requête|request.parameters=Paramètres de la requête|request.url=URL de la requête|request.wiki=Wiki de la requête|user=Utilisateur|wiki=Wiki</values>
+        <values>action=Action|doc.reference=Document|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.parameters=Request parameters|request.url=Request URL|request.wiki=Request wiki|user=User|wiki=Wiki</values>
         <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
       </async_context>
       <async_enabled>
@@ -327,35 +327,42 @@ def getContentFromURL(url, token) {
    }
  }
 
+def getBaseURL(projectId) {
+  if (projectType == "")
+   return gitlabapiUrl
+  else
+   return gitlabapiUrl + projectType + "s/" + projectId + "/";
+}
+
 def getProject(projectId) {
   // https://&lt;server&gt;/api/v4/projects/&lt;projectid&gt;
-  return getContentFromURL(gitlabapiUrl + "projects/" + projectId, token)
+  return getContentFromURL(getBaseURL(projectId), token)
 }
 
 def getIssues(issueFilter, page, perPage) {
   // https://&lt;server&gt;/api/v4/projects/&lt;projectid&gt;/issues/?state=opened&amp;milestone=1.0
   return getContentFromURL(
-    String.format('%sprojects/%s/issues/?page=%s&amp;per_page=%s&amp;%s', gitlabapiUrl, projectId, page, perPage, issueFilter), token);
+    String.format('%sissues/?page=%s&amp;per_page=%s&amp;%s', getBaseURL(projectId), page, perPage, issueFilter), token);
 }
 
 def getIssue(issueId) {
   // https://&lt;server&gt;/api/v4/projects/&lt;projectid&gt;/issues/&lt;issueId&gt;
-  return getContentFromURL(gitlabapiUrl + "projects/" + projectId + "/issues/" + issueId, token)
+  return getContentFromURL(getBaseURL(projectId) + "issues/" + issueId, token)
 }
 
 def getIssueNotes(issueId) {
   // https://&lt;server&gt;/api/v4/projects/&lt;projectid&gt;/issues/&lt;issueId&gt;/notes
-  return getContentFromURL(gitlabapiUrl + "projects/" + projectId + "/issues/" + issueId + "/notes", token)
+  return getContentFromURL(getBaseURL(projectId) + "issues/" + issueId + "/notes", token)
 }
 
 def getCommit(commitSha) {
   // https://&lt;server&gt;/api/v4/projects/&lt;projectid&gt;/repository/commits/&lt;commitSha&gt;
-  return getContentFromURL(gitlabapiUrl + "projects/" + projectId + "/repository/commits/" + commitSha, token)
+  return getContentFromURL(getBaseURL(projectId) + "repository/commits/" + commitSha, token)
 }
 
 def getDiff(commitSha) {
   // https://&lt;server&gt;/api/v4/projects/&lt;projectid&gt;/repository/commits/&lt;commitSha&gt;/diff
-  return getContentFromURL(gitlabapiUrl + "projects/" + projectId + "/repository/commits/" + commitSha + "/diff", token)
+  return getContentFromURL(getBaseURL(projectId) + "repository/commits/" + commitSha + "/diff", token)
 }
 
 
@@ -447,6 +454,16 @@ try {
     println "{{error}}" + services.localization.render("gitlab.macros.badurl") + "{{/error}}"
   } else {
     projectId =  xcontext.macro.params.projectId
+    groupId =  xcontext.macro.params.groupId
+    if (projectId==null &amp;&amp; groupId==null) {
+      projectType = ""
+    } else if (projectId==null) {
+      projectType = "group"
+      projectId = groupId
+    } else {
+      projectType = "project"
+      projectId = projectId
+    }
     gitlabapiUrl = url + "/api/v4/";
     gitlabproject = getProject(projectId)
     if (gitlabproject!=null) {
@@ -475,7 +492,7 @@ try {
         // Get every issue. We'll stop at 100 pages fetched (equivalent to max 10 000 issues)
         // in order to avoid getting into an infinite loop.
         def tempIssues = [0];
-        for (int pageCount = 1; pageCount &lt; 100 &amp;&amp; tempIssues.size() > 0; pageCount++) {
+        for (int pageCount = 1; pageCount &lt; 100 &amp;&amp; tempIssues.size() &gt; 0; pageCount++) {
           tempIssues = getIssues(issueFilter, pageCount, wikimacro.parameters.pageSize);
           issues.addAll(tempIssues);
         }
@@ -839,7 +856,7 @@ if (request.debug)
       <name>source</name>
     </property>
     <property>
-      <type></type>
+      <type/>
     </property>
   </object>
   <object>
@@ -1074,6 +1091,84 @@ if (request.debug)
     </property>
     <property>
       <type>java.lang.Integer</type>
+    </property>
+  </object>
+  <object>
+    <name>GitLab.Code.Macros.GitLabMacro</name>
+    <number>7</number>
+    <className>XWiki.WikiMacroParameterClass</className>
+    <guid>3c9ea008-cd24-4500-8bd6-5cbbf44709ae</guid>
+    <class>
+      <name>XWiki.WikiMacroParameterClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <defaultValue>
+        <disabled>0</disabled>
+        <name>defaultValue</name>
+        <number>4</number>
+        <prettyName>Parameter default value</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </defaultValue>
+      <description>
+        <disabled>0</disabled>
+        <name>description</name>
+        <number>2</number>
+        <prettyName>Parameter description</prettyName>
+        <rows>5</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </description>
+      <mandatory>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType>yesno</displayType>
+        <name>mandatory</name>
+        <number>3</number>
+        <prettyName>Parameter mandatory</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </mandatory>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>1</number>
+        <prettyName>Parameter name</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <type>
+        <disabled>0</disabled>
+        <name>type</name>
+        <number>5</number>
+        <prettyName>Parameter type</prettyName>
+        <size>60</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </type>
+    </class>
+    <property>
+      <defaultValue/>
+    </property>
+    <property>
+      <description>GitLab Group Id</description>
+    </property>
+    <property>
+      <mandatory/>
+    </property>
+    <property>
+      <name>groupId</name>
+    </property>
+    <property>
+      <type/>
     </property>
   </object>
 </xwikidoc>
