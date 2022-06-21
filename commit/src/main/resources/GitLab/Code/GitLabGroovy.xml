@@ -140,8 +140,16 @@ public class GitLabGroovy {
             xmlVersion = "1.1"
 
         def authobj = configdoc.getObject("GitLab.Code.GitLabAuthClass", "contextuser", context.user)
-        if (authobj) {
+        if (authobj &amp;&amp; authobj.getProperty("token").property.value != '') {
             this.token = authobj.getProperty("token").property.value
+        } else {
+            // Attempt to load a token defined on the user profile
+            def userProfileDoc = xwiki.getDocument(context.user);
+            userProfileDoc.use('GitLab.Code.GitLabAuthProfileClass');
+            def userProfileToken = userProfileDoc.getValue('token');
+            if (userProfileToken != '') {
+                this.token = userProfileToken;
+            }
         }
 
         //Basic authentication

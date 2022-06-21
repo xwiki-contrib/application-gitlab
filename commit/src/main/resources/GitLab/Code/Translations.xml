@@ -113,7 +113,13 @@ GitLab.Code.GitLabConfigClass_defaultLanguageDefinitionStrategy_alwaysBlank=Alwa
 GitLab.Code.GitLabConfigClass_status=Commit Status
 
 GitLab.Code.GitLabAuthClass_username=GitLab User
-GitLab.Code.GitLabAuthClass_password=GitLab Password</content>
+GitLab.Code.GitLabAuthClass_password=GitLab Password
+
+platform.core.profile.category.gitlab=GitLab
+gitlab.profilesheet.title=GitLab Authentication
+gitlab.profilesheet.newAuthObjectSaveComment=Create GitLab Authentication object
+gitlab.profilesheet.noAuthObject=No authentication object defined. Edit your profile to create one.
+gitlab.profilesheet.description=You can define a token to be used with the GitLab Commit application in any project in your wikis. If you need to override this token for a specific project, simply define it in the project configuration page.</content>
   <object>
     <name>GitLab.Code.Translations</name>
     <number>0</number>
