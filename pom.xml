@@ -29,7 +29,7 @@
   </parent>
   <groupId>org.xwiki.contrib.gitlab</groupId>
   <artifactId>application-gitlab</artifactId>
-  <version>2.3</version>
+  <version>2.4-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>GitLab - Parent POM</name>
   <properties>
@@ -68,7 +68,7 @@
     <connection>scm:git:git@github.com:xwiki-contrib/application-gitlab.git</connection>
     <developerConnection>scm:git:git@github.com:xwiki-contrib/application-gitlab.git</developerConnection>
     <url>https://github.com/xwiki-contrib/application-gitlab</url>
-    <tag>application-gitlab-2.3</tag>
+    <tag>HEAD</tag>
   </scm>
   <modules>
     <module>ci</module>
