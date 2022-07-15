@@ -1055,6 +1055,10 @@ public class GitLabGroovy {
             if (node != null) {
                 node.setText(DEFAULTAUTHOR);
             }
+            node = rnode.element("originalMetadataAuthor");
+            if (node != null) {
+                node.setText(DEFAULTAUTHOR);
+            }
         }
 
         if (this.removeDates) {
