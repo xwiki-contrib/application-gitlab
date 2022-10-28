@@ -54,7 +54,18 @@ gitlab.macros.field.id=ID
 gitlab.macros.field.milestone.title=Milestone
 gitlab.macros.field.state=State
 gitlab.macros.field.title=Title
-gitlab.macros.field.updated_at=Updated at</content>
+gitlab.macros.field.updated_at=Updated at
+gitlab.macros.field.project=Project
+gitlab.macros.stats.open=Open
+gitlab.macros.stats.closed=Closed
+gitlab.macros.stats.closedrecently=Closed recently
+gitlab.macros.stats.days=days
+gitlab.macros.stats.nb=Nb
+gitlab.macros.graph.days=Days
+gitlab.macros.graph.open=Open
+gitlab.macros.graph.newlyopen=Newly Open
+gitlab.macros.graph.closed=Closed
+</content>
   <object>
     <name>GitLab.Code.Macros.Translations</name>
     <number>0</number>

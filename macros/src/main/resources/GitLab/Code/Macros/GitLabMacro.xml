@@ -643,9 +643,22 @@ try {
                println """|((( ${item} )))| ${sortedTable[item]["all"]}"""
             }
           }
-        } else {
-          for (issue in issues) {
-            displayIssue(issue, fields, style)
+      } else if (style=="openclosegraph") {
+          def openCloseGraphDays = (xcontext.macro.params.openCloseGraphDays==null) ? 30 : Integer.parseInt(xcontext.macro.params.openCloseGraphDays);
+          def graphId = (xcontext.macro.params.graphId) ? "graph${xcontext.macro.params.graphId}" : "graph";
+          def data = getOpenCloseGraph(issues, openCloseGraphDays)
+          println ""
+          println """{{tableToChartJS type="line" table="${graphId}" multipleDataSets="true" /}}"""
+          println ""
+          println """(% id="${graphId}" style="display: none;" %)"""
+          println "|=${services.localization.render("gitlab.macros.graph.days")}|=${services.localization.render("gitlab.macros.graph.open")}|=${services.localization.render("gitlab.macros.graph.newlyopen")}|=${services.localization.render("gitlab.macros.graph.closed")}"
+          for (def i=0;i&lt;=openCloseGraphDays;i++) {
+            def days = openCloseGraphDays - i
+            println """|${days}|${data[i]["open"]}|${data[i]["newopen"]}|${data[i]["closed"]}"""
+          }
+          } else {
+        for (issue in issues) {
+          displayIssue(issue, fields, style)
         }
       }
     } else if (xcontext.macro.content &amp;&amp; xcontext.macro.content.trim()!="") {

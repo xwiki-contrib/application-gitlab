@@ -33,5 +33,6 @@
   <description>Provide reporting macros for GitLab</description>
   <properties>
     <xwiki.extension.category>application</xwiki.extension.category>
+    <xwiki.spoon.skip>true</xwiki.spoon.skip>
   </properties>
 </project>

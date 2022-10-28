@@ -47,5 +47,23 @@ gitlab.config.save=Sauvegarder
 gitlab.config.add=Ajouter une instance GitLab
 gitlab.macros.badurl=Vous n'avez pas fourni une URL valide pour l'instance GitLab
 gitlab.macros.authfailed=Error d'authentification lors de l'accès à l'instance GitLab
+gitlab.macros.field.assignee.name=Reponsable
+gitlab.macros.field.closed_at=Fermé le
+gitlab.macros.field.created_at=Crée le
+gitlab.macros.field.id=ID
+gitlab.macros.field.milestone.title=Milestone
+gitlab.macros.field.state=Status
+gitlab.macros.field.title=Titre
+gitlab.macros.field.updated_at=Mis à jour le
+gitlab.macros.field.project=Projet
+gitlab.macros.stats.open=Ouvert(s)
+gitlab.macros.stats.closed=Fermé(s)
+gitlab.macros.stats.closedrecently=Fermé(s) récemment
+gitlab.macros.stats.days=jours
+gitlab.macros.stats.nb=Nombre
+gitlab.macros.graph.days=Jours
+gitlab.macros.graph.open=Ouvert
+gitlab.macros.graph.newlyopen=Nouveau(x)
+gitlab.macros.graph.closed=Fermé(s)
 </content>
 </xwikidoc>
