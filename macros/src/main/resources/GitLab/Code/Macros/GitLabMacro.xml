@@ -294,6 +294,7 @@ state=closed
       <code>{{groovy}}
 import groovy.json.*;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 
 debugStr = ""
 
@@ -392,6 +393,104 @@ def getCommittedFiles(issue) {
   return commits
 }
 
+def getFieldFromIssue(issue, field) {
+  def value = issue;
+  field.split('\\.').each { fieldPart -&gt;
+    if (value != null) {
+      value = value[fieldPart];
+    }
+  }
+  if (value==null) {
+    value = "";
+  }
+  return value;
+}
+
+def getOpenCloseGraph(issues, openCloseGraphDays) {
+  def table = []
+  def df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+  def today = new Date()
+  for (def i=0;i&lt;openCloseGraphDays;i++) {
+    table[i] = [ opened: 0, closed: 0]
+  }
+  def initialNbOpen = 0
+  for (issue in issues) {
+     def openDate = df1.parse(issue.created_at);
+     def nbDaysOpen = today.minus(openDate)
+     if (nbDaysOpen&lt;openCloseGraphDays) {
+       table[nbDaysOpen]["opened"] = table[nbDaysOpen]["opened"] + 1;
+     } else {
+       initialNbOpen++;
+     }
+
+     if (issue.state=="closed") {
+       def closedDate = df1.parse(issue.closed_at);
+       def nbDaysClosed = today.minus(closedDate)
+       if (nbDaysClosed&lt;openCloseGraphDays) {
+         table[nbDaysClosed]["closed"] = table[nbDaysClosed]["closed"]  + 1;
+       } else {
+         initialNbOpen--;
+       }
+     }
+  }
+  def table2 = []
+  table2[0] = [open: initialNbOpen, newopen: 0, closed: 0];
+  def rtable = table.reverse()
+  for (def i=0;i&lt;rtable.size();i++) {
+     table2[i+1] = [open:  table2[i]["open"] + rtable[i]["opened"] - rtable[i]["closed"], newopen : rtable[i]["opened"], closed : rtable[i]["closed"]];
+  }
+  return table2;
+}
+
+def getStats(issues, statsGroup, statsGroupDisplay, statsGroupSort, statsShowOpenClosed, statsShowOpenClosedRecent) {
+  if (statsGroup==null || statsGroup=="")
+  statsGroup = "assignee.name"
+  if (statsGroup=="project")
+  statsGroup = "references.full"
+  if (statsGroupDisplay==null || statsGroupDisplay=="")
+  statsGroupDisplay = statsGroup;
+  if (statsGroupSort!="key") {
+    statsGroupSort = "value"
+  }
+  def table = [:]
+  def df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+  def today = new Date()
+  for (issue in issues) {
+    def item = getFieldFromIssue(issue, statsGroup);
+    if (statsGroup=="references.full") {
+      item = item.substring(item.lastIndexOf("/")+1, item.lastIndexOf("#"))
+    }
+    if (item!="") {
+      def addopen = 1;
+      def addclosed = 0;
+      def addclosedrecent = 0;
+      if (statsShowOpenClosed) {
+         if (issue.state=="closed") {
+           addopen = 0
+           addclosed = 1
+           addclosedrecent = 0
+           def closedDate = df1.parse(issue.closed_at);
+           def nbDaysClosed = today.minus(closedDate)
+           if (nbDaysClosed&lt;=statsShowOpenClosedRecent)
+              addclosedrecent = 1;
+         }
+      }
+      if (table[item]) {
+        table[item]["all"] = table[item]["all"] + 1;
+        table[item]["opened"] = table[item]["opened"] + addopen;
+        table[item]["closed"] = table[item]["closed"] + addclosed;
+        table[item]["closedrecent"] = table[item]["closedrecent"] + addclosedrecent;
+      } else {
+        table[item] = [ all : 1, opened: addopen, closed: addclosed, closedrecent: addclosedrecent];
+      }
+    }
+  }
+  def sortedTable = (statsGroupSort=="value")
+  ? table.sort { a, b -&gt; b.value["opened"] &lt;=&gt; a.value["opened"] }
+  : table.sort { a, b -&gt; a.key &lt;=&gt; b.key };
+  return sortedTable;
+}
+
 def displayIssue(issue, fields, style) {
    if (request.debug)
   println "{{{ ${issue} }}}"
@@ -413,15 +512,7 @@ def displayIssue(issue, fields, style) {
          else
            print "|[[${issue.iid}&gt;&gt;url:${issue.web_url}]]"
        } else {
-         def value = issue;
-         field.split('\\.').each { fieldPart -&gt;
-           if (value != null) {
-             value = value[fieldPart];
-           }
-         }
-         if (value==null) {
-           value = "";
-         }
+         def value = getFieldFromIssue(issue, field);
          print "|((( ${value} )))";
        }
      }
@@ -440,6 +531,33 @@ def displayIssue(issue, fields, style) {
    }
  }
 }
+
+def getIssuesUri(url, uri, issueFilterList) {
+  def issueUrl = url + xcontext.macro.params.uri + "?sort=updated_desc";
+  for (issueFilter in issueFilterList) {
+     def issueFilterArray = issueFilter.split("=")
+     def propName = issueFilterArray[0]
+     if (request.debug)
+       debug(propName)
+     def valueName = issueFilterArray[1]
+     if (request.debug)
+       debug(valueName)
+     for (value in valueName.split("%2C")) {
+       def newPropName = propName;
+       if (propName=="labels")
+         newPropName = "label_name"
+       else if (propName=="not%5Blabels%5D")
+         newPropName = "not%5Blabel_name%5D%5B%5D"
+       else if (propName=="milestone")
+         newPropName = "milestone_title"
+     if (request.debug)
+       debug(propName)
+       issueUrl += "&amp;" + newPropName + "=" + value;
+     }
+  }
+  return issueUrl;
+}
+
 
 try {
   def instanceId = xcontext.macro.params.id
@@ -499,8 +617,36 @@ try {
       } else {
         issues = getIssues(issueFilter, wikimacro.parameters.page, wikimacro.parameters.pageSize)
       }
-      for (issue in issues) {
-        displayIssue(issue, fields, style)
+      if (style=="count") {
+          def issueUrl = getIssuesUri(url, xcontext.macro.params.uri, issueFilterList)
+          println "[[" + issues.size() + "&gt;&gt;url:" + issueUrl + "]]"
+      } else if (style=="stats") {
+          def statsGroup = xcontext.macro.params.statsGroup;
+          def statsGroupDisplay = xcontext.macro.params.statsGroupDisplay;
+          def statsGroupSort = xcontext.macro.params.statsGroupSort;
+          def statsShowOpenClosed = (xcontext.macro.params.statsShowOpenClosed == "1");
+          def statsShowOpenClosedRecent = (xcontext.macro.params.statsShowOpenClosedRecent==null) ? 0 : Integer.parseInt(xcontext.macro.params.statsShowOpenClosedRecent);
+          def sortedTable = getStats(issues, statsGroup, statsGroupDisplay, statsGroupSort, statsShowOpenClosed, statsShowOpenClosedRecent);
+          if (statsShowOpenClosedRecent) {
+            println """|= {{translation key=\"gitlab.macros.field.${statsGroup}\" /}} |= ${services.localization.render("gitlab.macros.stats.open")} |= ${services.localization.render("gitlab.macros.stats.closed")} |= ${services.localization.render("gitlab.macros.stats.closedrecently")} (${statsShowOpenClosedRecent} ${services.localization.render("gitlab.macros.stats.days")})"""
+            for (item in sortedTable.keySet()) {
+               println """|((( ${item} )))| ${sortedTable[item]["opened"]} | ${sortedTable[item]["closed"]} | ${sortedTable[item]["closedrecent"]}"""
+            }
+          } else if (statsShowOpenClosed) {
+            println """|= ${statsGroup} |= ${services.localization.render("gitlab.macros.stats.open")} |= ${services.localization.render("gitlab.macros.stats.closed")}"""
+            for (item in sortedTable.keySet()) {
+               println """|((( ${item} )))| ${sortedTable[item]["opened"]} | ${sortedTable[item]["closed"]}"""
+            }
+          } else {
+            println """|= ${statsGroup} |= ${services.localization.render("gitlab.macros.stats.nb")}"""
+            for (item in sortedTable.keySet()) {
+               println """|((( ${item} )))| ${sortedTable[item]["all"]}"""
+            }
+          }
+        } else {
+          for (issue in issues) {
+            displayIssue(issue, fields, style)
+        }
       }
     } else if (xcontext.macro.content &amp;&amp; xcontext.macro.content.trim()!="") {
        def issues = xcontext.macro.content
