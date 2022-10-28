@@ -479,7 +479,7 @@ try {
     }
 
     if (xcontext.macro.params.source &amp;&amp; xcontext.macro.params.source=="query") {
-      def issueFilterList = xcontext.macro.content.split('\r\n');
+      def issueFilterList = xcontext.macro.content.split("\\r?\\n");
       for (int i = 0; i &lt; issueFilterList.size(); i++) {
         def filterEntry = issueFilterList[i].split('=', 2);
         if (filterEntry.size() == 2) {
