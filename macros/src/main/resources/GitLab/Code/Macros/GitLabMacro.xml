@@ -557,8 +557,17 @@ def getIssuesUri(url, uri, issueFilterList) {
   }
   return issueUrl;
 }
-
-
+groupNameCache = [:]
+def fetchGroupName(fetchId, fetchType) {
+  if (groupNameCache.containsKey(fetchId)) {
+    return groupNameCache[fetchId]
+  }
+  def metadataUrl = gitlabapiUrl + fetchType + "s/" + fetchId
+  def info = getContentFromURL(metadataUrl, token)
+  def name = (info != null &amp;&amp; info.name != null) ? info.name : fetchId.toString()
+  groupNameCache[fetchId] = name
+  return name
+}
 try {
   def instanceId = xcontext.macro.params.id
   def authobj = xwiki.getDocument("GitLab.Code.Macros.GitLabConfig").getObject("GitLab.Code.Macros.GitLabConfigClass", "id", instanceId)
@@ -573,11 +582,15 @@ try {
   } else {
     projectId =  xcontext.macro.params.projectId
     groupId =  xcontext.macro.params.groupId
-    if (projectId==null &amp;&amp; groupId==null) {
+    def groupIds = []
+    if (groupId != null &amp;&amp; groupId.trim() != "") {
+  groupIds = groupId.split(",").collect { it.trim() }.findAll { it != "" }
+  }
+    if (projectId==null &amp;&amp; groupIds.isEmpty()) {
       projectType = ""
     } else if (projectId==null) {
       projectType = "group"
-      projectId = groupId
+    projectId = groupIds[0]
     } else {
       projectType = "project"
       projectId = projectId
@@ -605,17 +618,30 @@ try {
         }
       }
       def issueFilter = issueFilterList.join('&amp;');
+      def idsToFetch = groupIds.isEmpty() ? [projectId] : groupIds
+
       def issues = [];
-      if (wikimacro.parameters.page == 0) {
+      for (fetchId in idsToFetch) {
+        def fetchType = groupIds.isEmpty() ? projectType : "group"
+        def fetchBaseUrl = (fetchType == "") ? gitlabapiUrl : gitlabapiUrl + fetchType + "s/" + fetchId + "/"
+        def groupName = fetchGroupName(fetchId, fetchType)
+        def groupIssues = [];
+        if (wikimacro.parameters.page == 0) {
         // Get every issue. We'll stop at 100 pages fetched (equivalent to max 10 000 issues)
         // in order to avoid getting into an infinite loop.
         def tempIssues = [0];
         for (int pageCount = 1; pageCount &lt; 100 &amp;&amp; tempIssues.size() &gt; 0; pageCount++) {
-          tempIssues = getIssues(issueFilter, pageCount, wikimacro.parameters.pageSize);
-          issues.addAll(tempIssues);
+          tempIssues = getContentFromURL(String.format('%sissues/?page=%s&amp;per_page=%s&amp;%s', fetchBaseUrl, pageCount, wikimacro.parameters.pageSize, issueFilter), token);
+          groupIssues.addAll(tempIssues);
         }
       } else {
-        issues = getIssues(issueFilter, wikimacro.parameters.page, wikimacro.parameters.pageSize)
+          groupIssues = getContentFromURL(String.format('%sissues/?page=%s&amp;per_page=%s&amp;%s', fetchBaseUrl, wikimacro.parameters.page, wikimacro.parameters.pageSize, issueFilter), token)
+    }
+        for (issue in groupIssues) {
+          issue["groupId"] = fetchId
+          issue["groupName"] = groupName
+        }
+        issues.addAll(groupIssues)
       }
       if (style=="count") {
           def issueUrl = getIssuesUri(url, xcontext.macro.params.uri, issueFilterList)
