@@ -406,6 +406,43 @@ def getFieldFromIssue(issue, field) {
   return value;
 }
 
+def formatDurationSeconds(seconds) {
+  // GitLab time-tracking convention: 1d = 8h.
+  def sec = seconds as Integer
+  if (sec == null || sec == 0)
+    return "";
+  def days = sec.intdiv(8*3600)
+  sec = sec % (8*3600);
+  def hours = sec.intdiv(3600)
+  sec = sec % 3600;
+  def minutes = sec.intdiv(60)
+  def result = ""
+  if (days &gt; 0)
+    result += "${days}d ";
+  if (hours &gt; 0)
+    result += "${hours}h ";
+  if (minutes &gt; 0)
+    result += "${minutes}m ";
+  return result.trim()
+}
+
+def formatFieldValue(field, value) {
+  if (field.startsWith("time_stats.")) {
+    def formatted = formatDurationSeconds(value)
+    if (formatted == "") {
+      return "{{translation key=\"gitlab.macros.notimeestimate\" /}}"
+    }
+    return formatted
+  }
+  if (field == "assignee" &amp;&amp; (value == null || value == "")) {
+    return "{{translation key=\"gitlab.macros.unassigned\" /}}"
+  }
+  if (value instanceof Map) {
+    return value.name ?: value.username ?: value.toString()
+  }
+  return value
+}
+
 def getOpenCloseGraph(issues, openCloseGraphDays) {
   def table = []
   def df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
@@ -513,6 +550,7 @@ def displayIssue(issue, fields, style) {
            print "|[[${issue.iid}&gt;&gt;url:${issue.web_url}]]"
        } else {
          def value = getFieldFromIssue(issue, field);
+         value = formatFieldValue(field, value);
          print "|((( ${value} )))";
        }
      }
