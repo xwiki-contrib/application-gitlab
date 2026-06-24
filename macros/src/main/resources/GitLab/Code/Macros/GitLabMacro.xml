@@ -584,13 +584,13 @@ try {
     groupId =  xcontext.macro.params.groupId
     def groupIds = []
     if (groupId != null &amp;&amp; groupId.trim() != "") {
-  groupIds = groupId.split(",").collect { it.trim() }.findAll { it != "" }
+      groupIds = groupId.split(",").collect { it.trim() }.findAll { it != "" }
   }
     if (projectId==null &amp;&amp; groupIds.isEmpty()) {
       projectType = ""
     } else if (projectId==null) {
       projectType = "group"
-    projectId = groupIds[0]
+      projectId = groupIds[0]
     } else {
       projectType = "project"
       projectId = projectId
