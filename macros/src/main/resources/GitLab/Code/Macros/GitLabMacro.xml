@@ -562,7 +562,7 @@ def fetchGroupName(fetchId, fetchType) {
   if (groupNameCache.containsKey(fetchId)) {
     return groupNameCache[fetchId]
   }
-  def metadataUrl = gitlabapiUrl + fetchType + "s/" + fetchId
+  def metadataUrl = gitlabapiUrl + fetchType + "s/" + URLEncoder.encode(fetchId.toString(), xwiki.getEncoding())
   def info = getContentFromURL(metadataUrl, token)
   def name = (info != null &amp;&amp; info.name != null) ? info.name : fetchId.toString()
   groupNameCache[fetchId] = name
@@ -623,7 +623,7 @@ try {
       def issues = [];
       for (fetchId in idsToFetch) {
         def fetchType = groupIds.isEmpty() ? projectType : "group"
-        def fetchBaseUrl = (fetchType == "") ? gitlabapiUrl : gitlabapiUrl + fetchType + "s/" + fetchId + "/"
+        def fetchBaseUrl = (fetchType == "") ? gitlabapiUrl : gitlabapiUrl + fetchType + "s/" + URLEncoder.encode(fetchId.toString(), xwiki.getEncoding()) + "/"
         def groupName = fetchGroupName(fetchId, fetchType)
         def groupIssues = [];
         if (wikimacro.parameters.page == 0) {
