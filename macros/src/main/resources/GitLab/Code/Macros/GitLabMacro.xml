@@ -406,41 +406,62 @@ def getFieldFromIssue(issue, field) {
   return value;
 }
 
-def formatDurationSeconds(seconds) {
-  // GitLab time-tracking convention: 1d = 8h.
-  def sec = seconds as Integer
-  if (sec == null || sec == 0)
-    return "";
-  def days = sec.intdiv(8*3600)
-  sec = sec % (8*3600);
-  def hours = sec.intdiv(3600)
-  sec = sec % 3600;
-  def minutes = sec.intdiv(60)
-  def result = ""
-  if (days &gt; 0)
-    result += "${days}d ";
-  if (hours &gt; 0)
-    result += "${hours}h ";
-  if (minutes &gt; 0)
-    result += "${minutes}m ";
-  return result.trim()
+def formatGitlabTime(Integer gitlabTime) {
+    if (gitlabTime == null || gitlabTime == 0) {
+        return ""
+    }
+    // GitLab: 1d = 8h. https://docs.gitlab.com/ee/user/project/time_tracking.html
+    def secondsPerDay = 8 * 3600
+    def sec = gitlabTime
+    def days = sec.intdiv(secondsPerDay)
+    sec = sec % secondsPerDay
+    def hours = sec.intdiv(3600)
+    sec = sec % 3600
+    def minutes = sec.intdiv(60)
+    def result = ""
+    if (days &gt; 0) result += "${days}d "
+    if (hours &gt; 0) result += "${hours}h "
+    if (minutes &gt; 0) result += "${minutes}m "
+    return result.trim()
 }
 
-def formatFieldValue(field, value) {
-  if (field.startsWith("time_stats.")) {
-    def formatted = formatDurationSeconds(value)
-    if (formatted == "") {
-      return "{{translation key=\"gitlab.macros.notimeestimate\" /}}"
-    }
-    return formatted
+def escapeWikiSyntax(value) {
+  if (value == null) {
+    return ""
   }
-  if (field == "assignee" &amp;&amp; (value == null || value == "")) {
+    return value.toString().replaceAll(/([{}|~=*_^,\[\]])/, '~$1')
+}
+
+def formatTimeStatsField(value) {
+  def formatted = formatGitlabTime(value as Integer)
+  if (formatted == "") {
+    return "{{translation key=\"gitlab.macros.notimeestimate\" /}}"
+    }
+    return escapeWikiSyntax(formatted)
+  }
+
+def formatAssigneeField(value) {
+  if (value == null || value == "") {
     return "{{translation key=\"gitlab.macros.unassigned\" /}}"
   }
+    return escapeWikiSyntax(extractDisplayName(value))
+  }
+
+def extractDisplayName(value) {
   if (value instanceof Map) {
     return value.name ?: value.username ?: value.toString()
   }
   return value
+}
+
+def formatFieldValue(field, value) {
+  if (field.startsWith("time_stats.")) {
+    return formatTimeStatsField(value)
+  }
+  if (field == "assignee") {
+    return formatAssigneeField(value)
+  }
+  return escapeWikiSyntax(extractDisplayName(value))
 }
 
 def getOpenCloseGraph(issues, openCloseGraphDays) {
