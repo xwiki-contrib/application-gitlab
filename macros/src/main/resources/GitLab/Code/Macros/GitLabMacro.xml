@@ -295,6 +295,7 @@ state=closed
 import groovy.json.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import org.xwiki.rendering.syntax.Syntax
 
 debugStr = ""
 
@@ -425,33 +426,29 @@ def formatGitlabTime(Integer gitlabTime) {
     return result.trim()
 }
 
-def escapeWikiSyntax(value) {
-  if (value == null) {
-    return ""
-  }
-    return value.toString().replaceAll(/([{}|~=*_^,\[\]])/, '~$1')
-}
-
 def formatTimeStatsField(value) {
   def formatted = formatGitlabTime(value as Integer)
   if (formatted == "") {
-    return "{{translation key=\"gitlab.macros.notimeestimate\" /}}"
-    }
-    return escapeWikiSyntax(formatted)
+    return services.localization.render("gitlab.macros.notimeestimate")
   }
+    return services.rendering.escape(formatted, Syntax.XWIKI_2_1)
+}
 
 def formatAssigneeField(value) {
   if (value == null || value == "") {
-    return "{{translation key=\"gitlab.macros.unassigned\" /}}"
+    return services.localization.render("gitlab.macros.unassigned")
   }
-    return escapeWikiSyntax(extractDisplayName(value))
-  }
+    return services.rendering.escape(extractDisplayName(value), Syntax.XWIKI_2_1)
+}
 
 def extractDisplayName(value) {
   if (value instanceof Map) {
     return value.name ?: value.username ?: value.toString()
   }
-  return value
+  if (value instanceof List) {
+    return value.join(", ")
+  }
+    return value?.toString() ?: ""
 }
 
 def formatFieldValue(field, value) {
@@ -461,7 +458,7 @@ def formatFieldValue(field, value) {
   if (field == "assignee") {
     return formatAssigneeField(value)
   }
-  return escapeWikiSyntax(extractDisplayName(value))
+  return services.rendering.escape(extractDisplayName(value), Syntax.XWIKI_2_1)
 }
 
 def getOpenCloseGraph(issues, openCloseGraphDays) {
