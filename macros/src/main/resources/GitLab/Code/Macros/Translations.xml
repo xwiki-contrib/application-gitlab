@@ -70,6 +70,8 @@ gitlab.macros.field.labels=Labels
 gitlab.macros.field.time_stats.time_estimate=Time estimate
 gitlab.macros.field.groupId=Group ID
 gitlab.macros.field.groupName=Group Name
+gitlab.macros.unassigned=Unassigned
+gitlab.macros.notimeestimate=No time estimate
 </content>
   <object>
     <name>GitLab.Code.Macros.Translations</name>

@@ -295,6 +295,7 @@ state=closed
 import groovy.json.*;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import org.xwiki.rendering.syntax.Syntax
 
 debugStr = ""
 
@@ -406,6 +407,60 @@ def getFieldFromIssue(issue, field) {
   return value;
 }
 
+def formatGitlabTime(Long gitlabTime) {
+    if (gitlabTime == null || gitlabTime == 0) {
+        return ""
+    }
+    // GitLab: 1d = 8h. https://docs.gitlab.com/ee/user/project/time_tracking.html
+    def secondsPerDay = 8 * 3600
+    def sec = gitlabTime
+    def days = sec.intdiv(secondsPerDay)
+    sec = sec % secondsPerDay
+    def hours = sec.intdiv(3600)
+    sec = sec % 3600
+    def minutes = sec.intdiv(60)
+    def result = ""
+    if (days &gt; 0) result += "${days}d "
+    if (hours &gt; 0) result += "${hours}h "
+    if (minutes &gt; 0) result += "${minutes}m "
+    return result.trim()
+}
+
+def formatTimeStatsField(value) {
+  def formatted = formatGitlabTime(value)
+  if (formatted == "") {
+    return services.rendering.escape(services.localization.render("gitlab.macros.notimeestimate"), Syntax.XWIKI_2_1)
+  }
+    return services.rendering.escape(extractDisplayName(formatted), Syntax.XWIKI_2_1)
+}
+
+def formatAssigneeField(value) {
+  if (value == null || value == "") {
+    return services.rendering.escape(services.localization.render("gitlab.macros.unassigned"), Syntax.XWIKI_2_1)
+  }
+    return services.rendering.escape(extractDisplayName(value), Syntax.XWIKI_2_1)
+}
+
+def extractDisplayName(value) {
+  if (value instanceof Map) {
+    return value.name ?: value.username ?: value.toString()
+  }
+  if (value instanceof List) {
+    return value.join(", ")
+  }
+    return value?.toString() ?: ""
+}
+
+def formatFieldValue(field, value) {
+  if (field.startsWith("time_stats.")) {
+    return formatTimeStatsField(value)
+  }
+  if (field == "assignee") {
+    return formatAssigneeField(value)
+  }
+  return services.rendering.escape(extractDisplayName(value), Syntax.XWIKI_2_1)
+}
+
 def getOpenCloseGraph(issues, openCloseGraphDays) {
   def table = []
   def df1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
@@ -513,6 +568,7 @@ def displayIssue(issue, fields, style) {
            print "|[[${issue.iid}&gt;&gt;url:${issue.web_url}]]"
        } else {
          def value = getFieldFromIssue(issue, field);
+         value = formatFieldValue(field, value);
          print "|((( ${value} )))";
        }
      }
@@ -557,8 +613,17 @@ def getIssuesUri(url, uri, issueFilterList) {
   }
   return issueUrl;
 }
-
-
+groupNameCache = [:]
+def fetchGroupName(fetchId, fetchType) {
+  if (groupNameCache.containsKey(fetchId)) {
+    return groupNameCache[fetchId]
+  }
+  def metadataUrl = gitlabapiUrl + fetchType + "s/" + URLEncoder.encode(fetchId.toString(), xwiki.getEncoding())
+  def info = getContentFromURL(metadataUrl, token)
+  def name = (info != null &amp;&amp; info.name != null) ? info.name : fetchId.toString()
+  groupNameCache[fetchId] = name
+  return name
+}
 try {
   def instanceId = xcontext.macro.params.id
   def authobj = xwiki.getDocument("GitLab.Code.Macros.GitLabConfig").getObject("GitLab.Code.Macros.GitLabConfigClass", "id", instanceId)
@@ -573,11 +638,15 @@ try {
   } else {
     projectId =  xcontext.macro.params.projectId
     groupId =  xcontext.macro.params.groupId
-    if (projectId==null &amp;&amp; groupId==null) {
+    def groupIds = []
+    if (groupId != null &amp;&amp; groupId.trim() != "") {
+      groupIds = groupId.split(",").collect { it.trim() }.findAll { it != "" }
+  }
+    if (projectId==null &amp;&amp; groupIds.isEmpty()) {
       projectType = ""
     } else if (projectId==null) {
       projectType = "group"
-      projectId = groupId
+      projectId = groupIds[0]
     } else {
       projectType = "project"
       projectId = projectId
@@ -605,17 +674,30 @@ try {
         }
       }
       def issueFilter = issueFilterList.join('&amp;');
+      def idsToFetch = groupIds.isEmpty() ? [projectId] : groupIds
+
       def issues = [];
-      if (wikimacro.parameters.page == 0) {
+      for (fetchId in idsToFetch) {
+        def fetchType = groupIds.isEmpty() ? projectType : "group"
+        def fetchBaseUrl = (fetchType == "") ? gitlabapiUrl : gitlabapiUrl + fetchType + "s/" + URLEncoder.encode(fetchId.toString(), xwiki.getEncoding()) + "/"
+        def groupName = fetchGroupName(fetchId, fetchType)
+        def groupIssues = [];
+        if (wikimacro.parameters.page == 0) {
         // Get every issue. We'll stop at 100 pages fetched (equivalent to max 10 000 issues)
         // in order to avoid getting into an infinite loop.
         def tempIssues = [0];
         for (int pageCount = 1; pageCount &lt; 100 &amp;&amp; tempIssues.size() &gt; 0; pageCount++) {
-          tempIssues = getIssues(issueFilter, pageCount, wikimacro.parameters.pageSize);
-          issues.addAll(tempIssues);
+          tempIssues = getContentFromURL(String.format('%sissues/?page=%s&amp;per_page=%s&amp;%s', fetchBaseUrl, pageCount, wikimacro.parameters.pageSize, issueFilter), token);
+          groupIssues.addAll(tempIssues);
         }
       } else {
-        issues = getIssues(issueFilter, wikimacro.parameters.page, wikimacro.parameters.pageSize)
+          groupIssues = getContentFromURL(String.format('%sissues/?page=%s&amp;per_page=%s&amp;%s', fetchBaseUrl, wikimacro.parameters.page, wikimacro.parameters.pageSize, issueFilter), token)
+    }
+        for (issue in groupIssues) {
+          issue["groupId"] = fetchId
+          issue["groupName"] = groupName
+        }
+        issues.addAll(groupIssues)
       }
       if (style=="count") {
           def issueUrl = getIssuesUri(url, xcontext.macro.params.uri, issueFilterList)
