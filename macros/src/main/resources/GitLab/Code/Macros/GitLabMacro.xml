@@ -407,7 +407,7 @@ def getFieldFromIssue(issue, field) {
   return value;
 }
 
-def formatGitlabTime(Integer gitlabTime) {
+def formatGitlabTime(Long gitlabTime) {
     if (gitlabTime == null || gitlabTime == 0) {
         return ""
     }
@@ -427,7 +427,7 @@ def formatGitlabTime(Integer gitlabTime) {
 }
 
 def formatTimeStatsField(value) {
-  def formatted = formatGitlabTime(value as Integer)
+  def formatted = formatGitlabTime(value)
   if (formatted == "") {
     return services.rendering.escape(services.localization.render("gitlab.macros.notimeestimate"), Syntax.XWIKI_2_1)
   }
