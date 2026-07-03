@@ -65,6 +65,8 @@ gitlab.macros.graph.days=Days
 gitlab.macros.graph.open=Open
 gitlab.macros.graph.newlyopen=Newly Open
 gitlab.macros.graph.closed=Closed
+gitlab.macros.unassigned=Unassigned
+gitlab.macros.notimeestimate=No time estimate
 </content>
   <object>
     <name>GitLab.Code.Macros.Translations</name>
