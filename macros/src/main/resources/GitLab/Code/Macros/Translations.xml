@@ -65,6 +65,11 @@ gitlab.macros.graph.days=Days
 gitlab.macros.graph.open=Open
 gitlab.macros.graph.newlyopen=Newly Open
 gitlab.macros.graph.closed=Closed
+gitlab.macros.field.assignee=Assignee
+gitlab.macros.field.labels=Labels
+gitlab.macros.field.time_stats.time_estimate=Time estimate
+gitlab.macros.field.groupId=Group ID
+gitlab.macros.field.groupName=Group Name
 gitlab.macros.unassigned=Unassigned
 gitlab.macros.notimeestimate=No time estimate
 </content>
