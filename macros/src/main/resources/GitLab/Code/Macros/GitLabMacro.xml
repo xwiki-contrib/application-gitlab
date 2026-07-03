@@ -429,14 +429,14 @@ def formatGitlabTime(Integer gitlabTime) {
 def formatTimeStatsField(value) {
   def formatted = formatGitlabTime(value as Integer)
   if (formatted == "") {
-    return services.localization.render("gitlab.macros.notimeestimate")
+    return services.rendering.escape(services.localization.render("gitlab.macros.notimeestimate"), Syntax.XWIKI_2_1)
   }
-    return services.rendering.escape(formatted, Syntax.XWIKI_2_1)
+    return services.rendering.escape(extractDisplayName(formatted), Syntax.XWIKI_2_1)
 }
 
 def formatAssigneeField(value) {
   if (value == null || value == "") {
-    return services.localization.render("gitlab.macros.unassigned")
+    return services.rendering.escape(services.localization.render("gitlab.macros.unassigned"), Syntax.XWIKI_2_1)
   }
     return services.rendering.escape(extractDisplayName(value), Syntax.XWIKI_2_1)
 }
